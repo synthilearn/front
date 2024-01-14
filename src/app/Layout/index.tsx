@@ -1,54 +1,49 @@
 import styled from 'styled-components';
+import { Layout as LayoutAntd } from 'antd';
+import { Sidebar } from 'widgets/Sidebar';
 import { Header } from 'widgets/Header';
-import { Footer } from 'widgets/Footer';
-import { ConfigProvider } from 'antd';
-import AppAuthRouter from 'app/AppAuthRouter';
+import { COLOR_PRIMARY, COLOR_SECONDARY } from 'shared/const';
+import { useState } from 'react';
 
-const Layout = () => {
+const { Header: HeaderAntd, Content, Sider } = LayoutAntd;
+
+interface ILayoutProps {
+  children: React.ReactNode;
+}
+
+const Layout = ({ children }: ILayoutProps) => {
+  const [siderIsOpen, setSiderIsOpen] = useState(true);
+
+  const changeOpenSider = () => {
+    setSiderIsOpen(prev => !prev);
+  };
   return (
-    <ConfigProvider
-      theme={{
-        token: {
-          colorPrimary: '#D20A11',
-          colorBorder: '#163E6C',
-          colorText: '#163E6C',
-        },
-        components: {
-          Input: {
-            controlHeightSM: 300,
-          },
-        },
-      }}
-    >
+    <LayoutStyled>
+      <Sider width={siderIsOpen ? '300px' : '100px'}>
+        <Sidebar siderIsOpen={siderIsOpen} changeOpenSider={changeOpenSider} />
+      </Sider>
       <LayoutStyled>
-        <Header />
-        <ContentWrapper>
-          <AppAuthRouter />
-        </ContentWrapper>
-        <Footer />
+        <HeaderWrapper>
+          <Header />
+        </HeaderWrapper>
+        <ContentWrapper>{children}</ContentWrapper>
       </LayoutStyled>
-    </ConfigProvider>
+    </LayoutStyled>
   );
 };
 
 export default Layout;
 
-const LayoutStyled = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+const LayoutStyled = styled(LayoutAntd)`
   height: 100%;
 `;
 
-const ContentWrapper = styled.div`
-  margin-top: 90px;
-  width: 100%;
-  padding: 20px 20px 0 20px;
-  flex: 1 1 auto;
+const HeaderWrapper = styled(HeaderAntd)`
+  height: 72px;
+  background-color: ${COLOR_PRIMARY};
+  border-left: 2px solid #1b5583;
+`;
 
-  @media (max-width: 768px) {
-    padding: 10px 10px 0 10px;
-  }
+const ContentWrapper = styled(Content)`
+  background: ${COLOR_SECONDARY};
 `;

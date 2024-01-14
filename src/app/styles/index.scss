@@ -4,15 +4,7 @@
 @import url("./fonts.scss");
 
 .app {
-  display: flex;
-  flex-direction: column;
-  max-width: 1920px;
   margin: 0 auto;
-  position: relative;
-  font-family: 'PT Astra Sans', serif;
+  font-family: 'Fira Sans', serif;
   color: var(--color-text);
-    
-  @media (min-width: 1536px) {
-    width: 1440px;
-  }
 }
