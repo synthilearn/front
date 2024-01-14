@@ -1,3 +1,3 @@
 export const PageNotAuth = () => {
-  return <></>;
+  return <div>Hello world</div>;
 };
