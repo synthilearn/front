@@ -1,0 +1,54 @@
+{
+  "compilerOptions": {
+    //TypeScript будет игнорировать папку из опции outDir, если она указана.
+    //Это папка, куда помещаются собранные артефакты сборки. Логично, что их нужно исключить.
+    "outDir": "./dist/",
+    // Подсвечивает все места где не указан тип
+    // Однако это не означает, что теперь вовсе нельзя использовать any.
+    // Это означает лишь, что в подобных ситуация разработчик должен явно писать any,
+    "noImplicitAny": true,
+    "module": "ES6",
+    // В какую спецификацию компилируем: для поддержки большинства браузеров
+    "target": "ES6",
+    "jsx": "react-jsx",
+    // Компилятор будет обрабатывать не только TS файлы, но и JS файлы
+    "allowJs": true,
+    "moduleResolution": "node",
+    // Для абсолютного импорта
+    "baseUrl": ".",
+    "paths": {
+      // ["**/*"]. Это означает, что поиск файлов будет осуществляться во всех папках и их подпапках
+      //Следующие форматы записей делают одно и тоже src, ./src, src/**/*. Я предпочитаю вариант ./src.
+        "*": ["./src/*"]
+    },
+    // esModuleInterop позволяет работать с пакетами, которые используют
+    // common js как с обычными пакета с помощью import (require() module.export) = common js
+    // import Moment from 'moment';
+    // без флага esModuleInterop результат undefined
+    // console.log(Moment);
+    // c флагом результат [object Object]
+    // console.log(Moment);
+    "esModuleInterop": true,
+    // Если какая-либо библиотека не имеет default import,
+    // лоадеры вроде ts-loader или babel-loader автоматически создают их
+    // вместо такого импорта
+    // import * as React from 'react';
+    // можно писать такой
+    // import React from 'react';
+    "allowSyntheticDefaultImports": true
+  },
+  // TypeScript будет использовать эту директиву для поиска компилируемых файлов. Если include так же не указана, то её значение будет неявно объявлено как ["**/*"].
+  //Технически, используя опции include и exclude, TypeScript
+  // сгенерирует список всех подходящих файлов и поместит их в files. Это можно наблюдать если выполнить команду tsc --showConfig.
+  "include": [
+    "./src",
+    "./config"
+
+  ],
+  "ts-node": {
+    "compilerOptions": {
+      "module": "CommonJS",
+      "forceConsistentCasingInFileNames": false
+    }
+  }
+}
