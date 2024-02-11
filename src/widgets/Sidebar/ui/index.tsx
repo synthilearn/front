@@ -4,15 +4,25 @@ import { MenuFoldOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import SidebarBody from 'widgets/Sidebar/ui/SidebarBody';
 import { SidebarFooter } from 'widgets/Sidebar/ui/SidebarFooter';
+import { IAreaItem } from 'shared/interfaces';
 
 interface ISidebarProps {
   siderIsOpen: boolean;
   changeOpenSider: () => void;
 }
 
-const activeAreas: string[] = ['Изучение языков', 'Изучение программирования'];
+const activeAreas: IAreaItem[] = [
+  {
+    label: 'Изучение языков',
+    clickLink: '/active-area/learn-language',
+  },
+  {
+    label: 'Изучение программирования',
+    clickLink: '/active-area/learn-programming',
+  },
+];
 
-const deactiveAreas: string[] = [];
+const deactiveAreas: IAreaItem[] = [];
 
 export const Sidebar = ({ changeOpenSider, siderIsOpen }: ISidebarProps) => {
   return (

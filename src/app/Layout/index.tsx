@@ -42,6 +42,7 @@ const HeaderWrapper = styled(HeaderAntd)`
   height: 72px;
   background-color: ${COLOR_PRIMARY};
   border-left: 2px solid #1b5583;
+  border-bottom: 2px solid #1b5583;
 `;
 
 const ContentWrapper = styled(Content)`

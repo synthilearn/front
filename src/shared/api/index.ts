@@ -2,11 +2,15 @@ import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { IToken } from 'shared/interfaces';
 
-export const API_URL = process.env.API_URL;
+export const API_URL = 'https://synthi-learn.online';
 
 export const $api = axios.create({
   // withCredentials: true,
   baseURL: API_URL,
+  headers: {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Credentials': 'true',
+  },
 });
 
 $api.interceptors.request.use(config => {
@@ -18,8 +22,7 @@ $api.interceptors.request.use(config => {
     const tokenObj: IToken = jwtDecode(localStorage.getItem('accessToken'));
     localStorage.setItem('role', tokenObj.role);
   }
-  config.headers['Access-Control-Allow-Origin'] = '*';
-  config.headers['Access-Control-Allow-Credentials'] = 'true';
+
   return config;
 });
 
@@ -30,7 +33,7 @@ $api.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
     if (
-      error.response.status == 401 &&
+      error.response?.status == 401 &&
       error.config &&
       !error.config._isRetry
     ) {

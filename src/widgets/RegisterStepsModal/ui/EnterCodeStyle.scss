@@ -1,0 +1,11 @@
+.my-input {
+  width: 30px;
+  height: 40px;
+  border: none;
+  background-color: inherit;
+  font-size: 20px;
+
+  &:focus-visible {
+    outline: none !important;
+  }
+}
