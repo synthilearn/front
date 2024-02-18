@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useMemo, useState } from 'react';
 import EnterEmailStep from 'widgets/RegisterStepsModal/ui/EnterEmailStep';
-import { Form, notification, Spin, StepProps, Steps } from 'antd';
+import { Form, Spin, StepProps, Steps } from 'antd';
 import {
   CodeOutlined,
   LoadingOutlined,
@@ -10,8 +10,8 @@ import {
 } from '@ant-design/icons';
 import EnterUserData from 'widgets/RegisterStepsModal/ui/EnterUserData';
 import EnterCode from 'widgets/RegisterStepsModal/ui/EnterCode';
-import { $api } from 'shared/api';
 import { useNavigate } from 'react-router-dom';
+import { useRegisterStepStore } from 'widgets/RegisterStepsModal/store/useRegisterStepStore';
 
 interface IUserData {
   name: string;
@@ -22,16 +22,14 @@ interface IUserData {
 
 export const RegisterStepsModal = () => {
   const [form] = Form.useForm();
-  const [userData, setUserData] = useState<IUserData>({
-    name: '',
-    surname: '',
-    birthDate: '',
-    email: '',
-  });
   const [otp, setOtp] = useState('');
-  const [step, setStep] = useState(0);
-  const [isLoadingBtn, setIsLoadingBtn] = useState(false);
   const navigate = useNavigate();
+
+  const step = useRegisterStepStore(state => state.step);
+  const isLoading = useRegisterStepStore(state => state.isLoading);
+  const sendEmail = useRegisterStepStore(state => state.sendEmail);
+  const sendUserData = useRegisterStepStore(state => state.sendUserData);
+  const sendCode = useRegisterStepStore(state => state.sendCode);
 
   const modalSteps = useMemo(
     () => [
@@ -60,134 +58,35 @@ export const RegisterStepsModal = () => {
     return initSteps;
   }, [step]);
 
-  const setEmail = (email: string) => {
-    setUserData(prev => ({ ...prev, email }));
-  };
-
-  const setNextStep = () => {
-    setStep(prev => prev + 1);
-  };
-
-  const setupEmail = async (email: string) => {
-    await $api
-      .post('customer-service/v1/auth/email-setup', {
-        email,
-      })
-      .then(() => {
-        setNextStep();
-      })
-      .catch(err => {
-        if (err?.response.data.message.includes('Customer with email')) {
-          setNextStep();
-        } else {
-          notification.error({
-            message: 'Ошибка!',
-            description: 'Возникла непредвиденнаяя ошибка',
-          });
-        }
-      })
-      .finally(() => {
-        setEmail(email);
-        setIsLoadingBtn(false);
-      });
-  };
-
-  const sendEmail = async () => {
-    await form
-      .validateFields(['email'])
-      .then(({ email }) => {
-        setIsLoadingBtn(true);
-        $api
-          .get(`customer-service/v1/customer/by-email/${email}`)
-          .then(async res => {
-            if (res.data.resultData.status === 'ACTIVE') {
-              notification.error({
-                message: 'Ошибка!',
-                description: `Аккаунт с почтой ${email} уже существует`,
-              });
-              setIsLoadingBtn(false);
-            } else if (res.data.resultData.status === 'DATA_SAVED') {
-              setEmail(email);
-              setStep(2);
-              setIsLoadingBtn(false);
-            } else {
-              await setupEmail(email);
-            }
-          })
-          .catch(async err => {
-            if (err.response.data.message.includes('not found')) {
-              await setupEmail(email);
-            }
-          });
-      })
-      .catch(err => console.log(err));
-  };
-
-  const sendUserData = () => {
-    form
-      .validateFields([
-        'name',
-        'surname',
-        'birthDate',
-        'password',
-        'confirmPassword',
-      ])
-      .then(({ name, surname, birthDate, password }) => {
-        $api
-          .post(
-            '/entrypoint-service/v1/auth/data-save',
-            {
-              name,
-              surname,
-              birthDate,
-              email: userData.email,
-            },
-            {
-              headers: {
-                secretPair: btoa(`${userData.email}:${password}`),
-              },
-            },
-          )
-          .then(() => {
-            setNextStep();
-          });
-      })
-      .catch(err => console.log(err));
-  };
-
-  const sendCode = () => {
-    console.log(otp);
-    if (otp.length === 6) {
-      $api
-        .post('/entrypoint-service/v1/auth/activate', {
-          email: userData.email,
-          otpCode: otp,
-        })
-        .then(res => {
-          notification.success({
-            message: 'Вход выполнен!',
-            description: `${res.data.resultData.name}, вы успешно вошли в систему`,
-          });
-          navigate('/');
-        })
-        .catch(err => {
-          if (err.data.message.includes("Otp code didn't match")) {
-            notification.error({
-              message: 'Ошибка!',
-              description: 'Неверный код подтверждения',
-            });
-          }
-        });
-    }
-  };
-
   const handleClickContinue = () => {
+    if (isLoading) {
+      return;
+    }
+
     if (step === 0) {
-      sendEmail();
+      form
+        .validateFields(['email'])
+        .then(({ email }) => {
+          sendEmail(email);
+        })
+        .catch(err => console.log(err));
     } else if (step === 1) {
-      sendUserData();
+      form
+        .validateFields([
+          'name',
+          'surname',
+          'birthDate',
+          'password',
+          'confirmPassword',
+        ])
+        .then(({ email, confirmPassword, ...userData }) => {
+          sendUserData(userData);
+        })
+        .catch(err => console.log(err));
     } else if (step === 2) {
-      sendCode();
+      if (otp.length === 6) {
+        sendCode(otp, navigate);
+      }
     }
   };
   return (
@@ -198,7 +97,7 @@ export const RegisterStepsModal = () => {
         {modalSteps[step]}
       </FormStyled>
       <StyledButton onClick={handleClickContinue}>
-        {step > 1 ? 'Отправить' : 'Далее'} {isLoadingBtn && <SpinStyled />}
+        {isLoading ? <SpinStyled /> : step > 1 ? 'Отправить' : 'Далее'}
       </StyledButton>
     </StepsModalContainer>
   );
@@ -239,6 +138,10 @@ const StyledButton = styled.span`
   color: #fff;
   transition: all 0.5s;
   position: relative;
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
 
   &::before {
     content: '';
@@ -278,8 +181,7 @@ const StyledButton = styled.span`
 `;
 
 const SpinStyled = styled(Spin)`
-  position: absolute;
-  top: 50%;
-  right: 20%;
-  transform: translate(-50%, -50%);
+  & .ant-spin-dot-item {
+    background-color: white;
+  }
 `;
