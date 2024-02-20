@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useMemo, useState } from 'react';
 import EnterEmailStep from 'widgets/RegisterStepsModal/ui/EnterEmailStep';
-import { Form, Spin, StepProps, Steps } from 'antd';
+import { Form, StepProps, Steps } from 'antd';
 import {
   CodeOutlined,
   LoadingOutlined,
@@ -12,6 +12,8 @@ import EnterUserData from 'widgets/RegisterStepsModal/ui/EnterUserData';
 import EnterCode from 'widgets/RegisterStepsModal/ui/EnterCode';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterStepStore } from 'widgets/RegisterStepsModal/store/useRegisterStepStore';
+import AuthFormContainer from 'entities/AuthFormContainer';
+import AuthBtn from 'shared/components/AuthBtn';
 
 interface IUserData {
   name: string;
@@ -90,33 +92,27 @@ export const RegisterStepsModal = () => {
     }
   };
   return (
-    <StepsModalContainer>
-      <Title>Регистрация</Title>
-      <Steps style={{ marginBottom: '15px' }} current={step} items={steps} />
-      <FormStyled form={form} layout="vertical">
-        {modalSteps[step]}
-      </FormStyled>
-      <StyledButton onClick={handleClickContinue}>
-        {isLoading ? <SpinStyled /> : step > 1 ? 'Отправить' : 'Далее'}
-      </StyledButton>
-    </StepsModalContainer>
+    <AuthFormContainer width={500}>
+      <StepModal>
+        <Title>Регистрация</Title>
+        <Steps style={{ marginBottom: '15px' }} current={step} items={steps} />
+        <FormStyled form={form} layout="vertical">
+          {modalSteps[step]}
+        </FormStyled>
+        <AuthBtn handleClick={handleClickContinue} isLoading={isLoading}>
+          {step > 1 ? 'Отправить' : 'Далее'}
+        </AuthBtn>
+      </StepModal>
+    </AuthFormContainer>
   );
 };
 
-const StepsModalContainer = styled.div`
-  position: relative;
-  z-index: 3;
+const StepModal = styled.div`
   display: flex;
   flex-direction: column;
   gap: 25px;
   justify-content: center;
   align-items: center;
-  padding: 40px;
-  border-radius: 4px;
-  box-shadow: 0 15px 35px rgba(0, 0, 0, 9);
-  width: 500px;
-  background: #3d3d3d;
-  font-size: 20px;
 `;
 
 const Title = styled.div`
@@ -127,61 +123,4 @@ const Title = styled.div`
 
 const FormStyled = styled(Form)`
   width: 100%;
-`;
-
-const StyledButton = styled.span`
-  line-height: 50px;
-  height: 50px;
-  text-align: center;
-  width: 250px;
-  cursor: pointer;
-  color: #fff;
-  transition: all 0.5s;
-  position: relative;
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  align-items: center;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    background-color: rgba(255, 255, 255, 0.1);
-    transition: all 0.3s;
-  }
-
-  &:hover::before {
-    opacity: 0;
-    transform: scale(0.5, 0.5);
-  }
-
-  &::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    opacity: 0;
-    transition: all 0.3s;
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    transform: scale(1.2, 1.2);
-  }
-
-  &:hover::after {
-    opacity: 1;
-    transform: scale(1, 1);
-  }
-`;
-
-const SpinStyled = styled(Spin)`
-  & .ant-spin-dot-item {
-    background-color: white;
-  }
 `;

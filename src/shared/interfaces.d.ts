@@ -17,6 +17,17 @@ export interface IBackendRes<T> {
   resultData: T | null;
 }
 
+export interface IAuthLink {
+  links: {
+    github: string;
+  };
+}
+
+export interface ILoginData {
+  accessToken: string;
+  refreshToken: string;
+}
+
 export interface IUserData {
   id: string;
   name: string;
