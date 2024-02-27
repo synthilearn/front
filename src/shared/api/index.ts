@@ -39,9 +39,15 @@ $api.interceptors.response.use(
     ) {
       originalRequest._isRetry = true;
       try {
-        const response = await axios.post(`${API_URL}/auth/refresh`, {
-          refreshToken: localStorage.getItem('refreshToken'),
-        });
+        const response = await axios.post(
+          `${API_URL}/entrypoint-service/v1/auth/refresh`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem('refreshToken')}`,
+            },
+          },
+        );
         localStorage.setItem(
           'accessToken',
           response.data.resultData.accessToken,

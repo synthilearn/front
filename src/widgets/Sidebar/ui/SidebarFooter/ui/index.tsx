@@ -26,6 +26,10 @@ export const SidebarFooter = ({ collapsed }: ISidebarFooterProps) => {
               label: 'Выйти',
               danger: true,
               icon: <LogoutOutlined />,
+              onClick: () => {
+                localStorage.clear();
+                window.location.reload();
+              },
             },
           ]}
           mode={collapsed ? 'vertical' : 'inline'}

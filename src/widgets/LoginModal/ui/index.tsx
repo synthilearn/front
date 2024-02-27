@@ -44,7 +44,7 @@ export const LoginModal = () => {
       localStorage.setItem('accessToken', resultData.accessToken);
       localStorage.setItem('refreshToken', resultData.refreshToken);
 
-      navigate('/');
+      window.location.reload();
 
       notification.success({
         message: 'Вход выполнен!',
