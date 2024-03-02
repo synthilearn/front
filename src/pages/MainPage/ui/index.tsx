@@ -22,6 +22,7 @@ export const MainPage = () => {
 
       navigate('/');
     }
-  }, []);
+  }, []); // для входа через github
+
   return <>{checkIsAuth() ? <PageAuth /> : <PageNotAuth />}</>;
 };

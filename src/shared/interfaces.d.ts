@@ -1,3 +1,5 @@
+import { TTemplateStatus } from 'shared/types';
+
 export type TIRole = 'ROLE_MANAGER' | 'ROLE_CLIENT';
 
 export interface IToken {
@@ -36,4 +38,13 @@ export interface IUserData {
   email: string;
   registrationType: 'INTERNAL' | 'EXTERNAL';
   status: 'ACTIVE' | 'EMAIL_SET';
+}
+
+export interface ITemplate {
+  type: TTemplateStatus;
+  name: string;
+  status: TTemplateStatus;
+  available: null;
+  description: string;
+  isFake: boolean;
 }
