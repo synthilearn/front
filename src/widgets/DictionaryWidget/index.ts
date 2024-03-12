@@ -1,0 +1,1 @@
+export { DictionaryWidget } from './ui';
