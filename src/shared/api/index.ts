@@ -1,6 +1,4 @@
 import axios from 'axios';
-import { jwtDecode } from 'jwt-decode';
-import { IToken } from 'shared/interfaces';
 
 export const API_URL = 'https://synthi-learn.online';
 
@@ -18,9 +16,6 @@ $api.interceptors.request.use(config => {
     config.headers.Authorization = `Bearer ${localStorage.getItem(
       'accessToken',
     )}`;
-
-    const tokenObj: IToken = jwtDecode(localStorage.getItem('accessToken'));
-    localStorage.setItem('role', tokenObj.role);
   }
 
   return config;

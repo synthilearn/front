@@ -21,17 +21,13 @@ const App = () => {
             colorBorder: '#163E6C',
             colorText: COLOR_TEXT,
             colorBgContainer: '#b8b8b8',
-            // colorTextPlaceholder: '#8c8c8c',
+            colorBgElevated: '#3E5F8A',
             fontSize: 16,
+            controlHeight: 40,
           },
           components: {
             Input: {
-              // colorText: COLOR_SECONDARY,
               fontSize: 18,
-              controlHeight: 40,
-            },
-            DatePicker: {
-              controlHeight: 40,
             },
             Menu: {
               itemSelectedBg: COLOR_SECONDARY,
