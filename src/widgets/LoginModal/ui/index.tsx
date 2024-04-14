@@ -9,6 +9,7 @@ import { $api } from 'shared/api';
 import { IAuthLink, IBackendRes, ILoginData } from 'shared/interfaces';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
+import { useEffect } from 'react';
 
 export const LoginModal = () => {
   const [form] = Form.useForm();
@@ -22,10 +23,36 @@ export const LoginModal = () => {
     },
     onSuccess: ({ data: { resultData } }) => {
       window.location.replace(resultData.links.github);
+
+      setTokens();
     },
     onError: err => {},
     onSettled: () => {},
   });
+
+  const setTokens = () => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    if (queryString) {
+      for (const [key, value] of urlParams) {
+        if (key === 'access_token') {
+          localStorage.setItem('accessToken', value);
+        } else if (key === 'refresh_token') {
+          localStorage.setItem('refreshToken', value);
+        }
+      }
+
+      window.location.reload();
+    }
+  };
+
+  useEffect(() => {
+    if (!!window.location.search) {
+      setTokens();
+    }
+    setTokens();
+  }, []);
 
   const { mutate: login, isPending: isLoadingLogin } = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) => {
