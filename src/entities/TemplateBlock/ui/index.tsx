@@ -9,6 +9,7 @@ interface IToolbarTemplate {
   hide: boolean;
   transitionDelay: number;
   isFake?: boolean;
+  selectCreatingTemplate: (templateName: string) => void;
 }
 
 export const TemplateBlock = ({
@@ -17,12 +18,19 @@ export const TemplateBlock = ({
   hide,
   transitionDelay,
   isFake = false,
+  selectCreatingTemplate,
 }: IToolbarTemplate) => {
+  const handleClick = () => {
+    if (!isFake) {
+      selectCreatingTemplate(name);
+    }
+  };
   return (
     <TemplateWrapper
       $isHide={hide}
       transitionDelay={transitionDelay}
       $isFake={isFake}
+      onClick={handleClick}
     >
       <span className="template-title">{name}</span>
       {isFake && (

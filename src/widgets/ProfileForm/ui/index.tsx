@@ -29,22 +29,21 @@ export const ProfileForm = () => {
     },
   });
 
-  const { mutate: editUserData, isPending: isLoadingCreateQuestion } =
-    useMutation({
-      mutationFn: (payload: { name: string; surname: string }) => {
-        return $api.patch<{ name: string; surname: string }>(
-          'customer-service/v1/customer',
-          payload,
-        );
-      },
-      onSuccess: async () => {
-        notification.success({
-          message: undefined,
-          description: 'Данные успешно изменены!',
-        });
-        await refetch();
-      },
-    });
+  const { mutate: editUserData, isPending: EditingUserData } = useMutation({
+    mutationFn: (payload: { name: string; surname: string }) => {
+      return $api.patch<{ name: string; surname: string }>(
+        'customer-service/v1/customer',
+        payload,
+      );
+    },
+    onSuccess: async () => {
+      notification.success({
+        message: undefined,
+        description: 'Данные успешно изменены!',
+      });
+      await refetch();
+    },
+  });
 
   const handleEditUserData = () => {
     editUserData({ name: values.name, surname: values.surname });
@@ -124,9 +123,6 @@ export const ProfileForm = () => {
             ]}
           >
             <Input />
-          </Form.Item>
-          <Form.Item name={'email'} label={'Почта'}>
-            <Input disabled />
           </Form.Item>
           <Form.Item name={'birthDate'} label={'Дата рождения'}>
             <DatePickerStyled disabled />

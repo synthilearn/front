@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { getItem, MenuItem } from './helpers/getMenuItem';
 import { CloseOutlined, DesktopOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { MenuStyled } from 'shared/components/StyledComponents';
 import { IAreaItem } from 'shared/interfaces';
 
@@ -17,6 +17,7 @@ const SidebarBody = ({
   collapsed,
 }: ISidebarBodyProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const items: MenuItem[] = [
     getItem(
       'Активные',
@@ -32,9 +33,16 @@ const SidebarBody = ({
       deactiveAreas.map(({ label, clickLink }) => getItem(label, clickLink)),
     ),
   ];
+
   return (
     <SidebarBodyWrappper>
       <MenuStyled
+        selectedKeys={[
+          //@ts-ignore
+          items[0]?.children?.find(
+            (area: any) => area?.key === location.pathname,
+          )?.key,
+        ]}
         $collapsed={collapsed}
         defaultSelectedKeys={['1']}
         defaultOpenKeys={['activeAreaTitle']}

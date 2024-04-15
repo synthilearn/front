@@ -33,7 +33,7 @@ export interface IUserData {
 }
 
 export interface ITemplate {
-  type: TTemplateStatus;
+  type: string;
   name: string;
   status: TTemplateStatus;
   available: null;
