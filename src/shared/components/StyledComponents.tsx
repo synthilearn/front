@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Menu } from 'antd';
+import { Form, Menu } from 'antd';
 import { COLOR_PRIMARY } from 'shared/const';
 
 export const MenuStyled = styled(Menu)<{ $collapsed: boolean }>`
@@ -27,4 +27,8 @@ export const MenuStyled = styled(Menu)<{ $collapsed: boolean }>`
         line-height: 52px;
       }
     `}
+`;
+
+export const FormStyled = styled(Form)`
+  width: 100%;
 `;

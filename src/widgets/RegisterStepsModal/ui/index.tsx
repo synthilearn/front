@@ -9,11 +9,12 @@ import {
   SolutionOutlined,
 } from '@ant-design/icons';
 import EnterUserData from 'widgets/RegisterStepsModal/ui/EnterUserData';
-import EnterCode from 'widgets/RegisterStepsModal/ui/EnterCode';
 import { useNavigate } from 'react-router-dom';
 import { useRegisterStepStore } from 'widgets/RegisterStepsModal/store/useRegisterStepStore';
 import AuthFormContainer from 'entities/AuthFormContainer';
 import AuthBtn from 'shared/components/AuthBtn';
+import { FormStyled } from 'shared/components/StyledComponents';
+import { OTPCodeInput } from 'entities/OTPCodeInput/ui';
 
 interface IUserData {
   name: string;
@@ -37,7 +38,7 @@ export const RegisterStepsModal = () => {
     () => [
       <EnterEmailStep />,
       <EnterUserData form={form} />,
-      <EnterCode otp={otp} setOtp={setOtp} />,
+      <OTPCodeInput otp={otp} setOtp={setOtp} />,
     ],
     [form, otp],
   );
@@ -119,8 +120,4 @@ const Title = styled.div`
   font-weight: 500;
   font-size: 24px;
   margin-bottom: 15px;
-`;
-
-const FormStyled = styled(Form)`
-  width: 100%;
 `;

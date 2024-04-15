@@ -1,52 +1,57 @@
-import styled, { css } from 'styled-components';
-import { COLOR_PRIMARY, COLOR_TEXT } from 'shared/const';
-import { MenuFoldOutlined } from '@ant-design/icons';
-import { Button } from 'antd';
+import styled, {css} from 'styled-components';
+import {COLOR_PRIMARY, COLOR_TEXT} from 'shared/const';
+import {MenuFoldOutlined} from '@ant-design/icons';
+import {Button} from 'antd';
 import SidebarBody from 'widgets/Sidebar/ui/SidebarBody';
-import { SidebarFooter } from 'widgets/Sidebar/ui/SidebarFooter';
-import { IAreaItem } from 'shared/interfaces';
+import {SidebarFooter} from 'widgets/Sidebar/ui/SidebarFooter';
+import {IAreaItem} from 'shared/interfaces';
+import {useNavigate} from "react-router-dom";
 
 interface ISidebarProps {
-  siderIsOpen: boolean;
-  changeOpenSider: () => void;
+    siderIsOpen: boolean;
+    changeOpenSider: () => void;
 }
 
 const activeAreas: IAreaItem[] = [
-  {
-    label: 'Изучение языков',
-    clickLink: '/active-area/learn-language',
-  },
-  {
-    label: 'Изучение программирования',
-    clickLink: '/active-area/learn-programming',
-  },
+    {
+        label: 'Изучение языков',
+        clickLink: '/active-area/learn-language',
+    },
+    {
+        label: 'Изучение программирования',
+        clickLink: '/active-area/learn-programming',
+    },
 ];
 
 const deactiveAreas: IAreaItem[] = [];
 
-export const Sidebar = ({ changeOpenSider, siderIsOpen }: ISidebarProps) => {
-  return (
-    <SidebarWrapper>
-      <div>
-        <SidebarHeader $isVertical={!siderIsOpen}>
-          <SidebarLogo $isVertical={!siderIsOpen}>SynthiLearn</SidebarLogo>
-          <ButtonStyled
-            $isRotate={!siderIsOpen}
-            onClick={changeOpenSider}
-            size={'large'}
-            type={'text'}
-            icon={<MenuIconStyled />}
-          />
-        </SidebarHeader>
-        <SidebarBody
-          activeAreas={activeAreas}
-          deactiveAreas={deactiveAreas}
-          collapsed={!siderIsOpen}
-        />
-      </div>
-      <SidebarFooter collapsed={!siderIsOpen} />
-    </SidebarWrapper>
-  );
+export const Sidebar = ({changeOpenSider, siderIsOpen}: ISidebarProps) => {
+    const navigate = useNavigate()
+    const goToMainPage = () => {
+        navigate('/')
+    }
+    return (
+        <SidebarWrapper>
+            <div>
+                <SidebarHeader $isVertical={!siderIsOpen}>
+                    <SidebarLogo onClick={goToMainPage} $isVertical={!siderIsOpen}>SynthiLearn</SidebarLogo>
+                    <ButtonStyled
+                        $isRotate={!siderIsOpen}
+                        onClick={changeOpenSider}
+                        size={'large'}
+                        type={'text'}
+                        icon={<MenuIconStyled/>}
+                    />
+                </SidebarHeader>
+                <SidebarBody
+                    activeAreas={activeAreas}
+                    deactiveAreas={deactiveAreas}
+                    collapsed={!siderIsOpen}
+                />
+            </div>
+            <SidebarFooter collapsed={!siderIsOpen}/>
+        </SidebarWrapper>
+    );
 };
 
 const SidebarWrapper = styled.div`
@@ -66,27 +71,28 @@ const SidebarHeader = styled.div<{ $isVertical: boolean }>`
   padding: 0 15px;
   margin-bottom: 40%;
 
-  ${({ $isVertical }) =>
-    $isVertical &&
-    css`
-      flex-direction: column-reverse;
-      gap: 56px;
-      justify-content: center;
-      margin-bottom: 160%;
-    `}
+  ${({$isVertical}) =>
+          $isVertical &&
+          css`
+            flex-direction: column-reverse;
+            gap: 56px;
+            justify-content: center;
+            margin-bottom: 160%;
+          `}
 `;
 
 const SidebarLogo = styled.div<{ $isVertical: boolean }>`
   font-size: 22px;
   letter-spacing: 2px;
+  cursor: pointer;
 
   transform: rotate(${props => (props.$isVertical ? '-90deg' : '0deg')});
 
-  ${({ $isVertical }) =>
-    $isVertical &&
-    css`
-      margin-left: -4px;
-    `}
+  ${({$isVertical}) =>
+          $isVertical &&
+          css`
+            margin-left: -4px;
+          `}
 `;
 
 const MenuIconStyled = styled(MenuFoldOutlined)`

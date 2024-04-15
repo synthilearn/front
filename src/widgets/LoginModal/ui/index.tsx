@@ -1,7 +1,6 @@
 import AuthFormContainer from 'entities/AuthFormContainer';
 import styled from 'styled-components';
 import { Button, Divider, Flex, Form, Input, notification, Spin } from 'antd';
-import { validateEmail } from 'shared/helpers/validateEmail';
 import AuthBtn from 'shared/components/AuthBtn';
 import { GithubOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -10,6 +9,8 @@ import { IAuthLink, IBackendRes, ILoginData } from 'shared/interfaces';
 import { useMutation } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
 import { useEffect } from 'react';
+import { emailValidator } from 'shared/helpers/emailValidator';
+import { ENTER_FIELD, FILED_IS_REQUIRED } from 'shared/const';
 
 export const LoginModal = () => {
   const [form] = Form.useForm();
@@ -71,12 +72,12 @@ export const LoginModal = () => {
       localStorage.setItem('accessToken', resultData.accessToken);
       localStorage.setItem('refreshToken', resultData.refreshToken);
 
-      window.location.reload();
-
       notification.success({
         message: 'Вход выполнен!',
         description: 'Вы успешно вошли в аккаунт',
       });
+
+      window.location.reload();
     },
     onError: (err: AxiosError<IBackendRes<ILoginData>>) => {
       if (err.response?.data?.message.includes("Passwords don't match")) {
@@ -117,18 +118,10 @@ export const LoginModal = () => {
           label="Введите почту"
           name="email"
           rules={[
+            FILED_IS_REQUIRED,
             {
-              required: true,
-              message: 'Заполните поле',
-            },
-            {
-              validator: (_, email) => {
-                if (!validateEmail(email) && !!email) {
-                  return Promise.reject();
-                }
-                return Promise.resolve();
-              },
-              message: 'невалидный email адрес',
+              validator: emailValidator,
+              message: 'Невалидный email адрес',
             },
           ]}
         >
@@ -140,7 +133,7 @@ export const LoginModal = () => {
           rules={[
             {
               required: true,
-              message: 'Заполните поле',
+              message: ENTER_FIELD,
             },
           ]}
         >

@@ -1,5 +1,6 @@
 import { DatePicker, Form, FormInstance, Input } from 'antd';
 import styled from 'styled-components';
+import { FILED_IS_REQUIRED } from 'shared/const';
 
 interface IEnterUserData {
   form: FormInstance<any>;
@@ -70,13 +71,7 @@ const EnterUserData = ({ form }: IEnterUserData) => {
 export default EnterUserData;
 
 const FormItem = styled(Form.Item).attrs(props => ({
-  rules: [
-    ...(props.rules || []),
-    {
-      required: true,
-      message: 'Заполните поле',
-    },
-  ],
+  rules: [...(props.rules || []), FILED_IS_REQUIRED],
 }))`
   margin-bottom: 10px;
   width: 100%;

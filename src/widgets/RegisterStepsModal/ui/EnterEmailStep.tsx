@@ -1,6 +1,6 @@
 import { Form, Input } from 'antd';
 import styled from 'styled-components';
-import { validateEmail } from 'shared/helpers/validateEmail';
+import { emailValidator } from 'shared/helpers/emailValidator';
 
 const EnterEmailStep = () => {
   return (
@@ -11,13 +11,8 @@ const EnterEmailStep = () => {
           message: 'Введите почту',
         },
         {
-          validator: (_, email) => {
-            if (!validateEmail(email) && !!email) {
-              return Promise.reject();
-            }
-            return Promise.resolve();
-          },
-          message: 'невалидный email адрес',
+          validator: emailValidator,
+          message: 'Невалидный email адрес',
         },
       ]}
       name={'email'}

@@ -20,10 +20,12 @@ const App = () => {
             colorPrimary: COLOR_SECONDARY,
             colorBorder: '#163E6C',
             colorText: COLOR_TEXT,
-            colorBgContainer: '#b8b8b8',
+            colorBgContainer: 'rgba(0,0,0, 0.1)',
             colorBgElevated: '#3E5F8A',
             fontSize: 16,
             controlHeight: 40,
+            colorTextDisabled: '#c9c9c9',
+            colorBgContainerDisabled: 'rgba(0,0,0, 0.4)',
           },
           components: {
             Input: {

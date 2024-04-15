@@ -1,13 +1,5 @@
 import { TTemplateStatus } from 'shared/types';
 
-export type TIRole = 'ROLE_MANAGER' | 'ROLE_CLIENT';
-
-export interface IToken {
-  role: TIRole;
-  sub: string;
-  company?: string;
-}
-
 export interface IAreaItem {
   label: string;
   clickLink: string;

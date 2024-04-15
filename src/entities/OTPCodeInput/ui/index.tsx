@@ -1,16 +1,14 @@
 import OTPInput from 'react-otp-input';
-import { Dispatch, SetStateAction, useState } from 'react';
 import styled from 'styled-components';
-import './EnterCodeStyle.scss';
+import { Dispatch, SetStateAction } from 'react';
+import '../styles/styles.scss';
 
 interface IEnterCode {
   otp: string;
   setOtp: Dispatch<SetStateAction<string>>;
 }
 
-const EnterCode = ({ otp, setOtp }: IEnterCode) => {
-  const [isError, setIsError] = useState(false);
-
+export const OTPCodeInput = ({ otp, setOtp }: IEnterCode) => {
   return (
     <CodeContainer>
       <OTPInput
@@ -25,8 +23,6 @@ const EnterCode = ({ otp, setOtp }: IEnterCode) => {
     </CodeContainer>
   );
 };
-
-export default EnterCode;
 
 const CodeContainer = styled.div`
   width: 100%;
