@@ -24,7 +24,7 @@ COPY --from=build /app/build /usr/share/nginx/html
 
 # Копируем SSL сертификат и ключ внутрь контейнера
 COPY /synthilearn/fullchain.pem /etc/nginx/ssl-cert.crt
-COPY /privkey.pem /etc/nginx/ssl-cert.key
+COPY /synthilearn/privkey.pem /etc/nginx/ssl-cert.key
 
 # Настройка Nginx для использования SSL
 RUN rm /etc/nginx/conf.d/default.conf
