@@ -40,7 +40,6 @@ const SidebarBody = ({
   ];
 
   useEffect(() => {
-    console.log(menuRef.current);
     setTargetTourItem(2, menuRef.current);
   }, [menuRef.current]);
 

@@ -22,7 +22,6 @@ export const UserBlock = () => {
   ];
 
   useEffect(() => {
-    console.log(userBlockRef.current);
     setTargetTourItem(3, userBlockRef.current);
   }, [userBlockRef.current]);
   return (

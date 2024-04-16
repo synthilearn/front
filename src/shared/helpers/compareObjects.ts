@@ -9,7 +9,6 @@ export const nonStrictCompareObjects = (obj1: any, obj2: any): boolean => {
   for (let key of keys1) {
     // Если значения свойств различаются, объекты не равны
     if (obj1[key] !== obj2[key]) {
-      console.log('не равны');
       return false;
     }
   }
