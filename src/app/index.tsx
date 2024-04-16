@@ -26,6 +26,9 @@ const App = () => {
             controlHeight: 40,
             colorTextDisabled: '#c9c9c9',
             colorBgContainerDisabled: 'rgba(0,0,0, 0.4)',
+            colorTextPlaceholder: 'rgb(255, 255, 255, 0.6)',
+            colorPrimaryHover: '#ffff',
+            colorPrimaryTextHover: 'red'
           },
           components: {
             Input: {
@@ -41,6 +44,14 @@ const App = () => {
             Steps: {
               colorPrimary: COLOR_PRIMARY,
             },
+            Button: {
+            },
+            Tour: {
+              colorPrimaryHover: 'red',
+            },
+            Pagination: {
+              colorPrimary: '#ffff'
+            }
           },
         }}
       >
