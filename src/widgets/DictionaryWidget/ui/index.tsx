@@ -1,15 +1,17 @@
 import styled from 'styled-components';
 import { DictionaryBook } from 'features/DictionaryBook';
+import { Flex, Input } from 'antd';
 
 export const DictionaryWidget = () => {
-  return (
-    <DictionaryWrapper>
-      <DictionaryBook />
-    </DictionaryWrapper>
-  );
+    return (
+        <DictionaryWrapper vertical gap={30}>
+            <Input />
+            <DictionaryBook />
+        </DictionaryWrapper>
+    );
 };
 
-const DictionaryWrapper = styled.div`
-  width: 100%;
-  height: 100%;
+const DictionaryWrapper = styled(Flex)`
+  flex-grow: 1;
+  padding: 3%;
 `;
