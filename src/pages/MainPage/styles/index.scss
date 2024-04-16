@@ -1,0 +1,60 @@
+.circles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.circles li {
+  position: absolute;
+  display: block;
+  list-style: none;
+  width: 20px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  bottom: -150px;
+
+}
+
+.circles li:nth-child(2n) {
+  animation: animate 25s linear infinite;
+}
+
+.circles li:nth-child(3n) {
+  animation: animateToLeft 25s linear infinite;
+}
+
+
+@keyframes animate {
+
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+    border-radius: 0;
+  }
+
+  100% {
+    transform: translateY(-1000px) rotate(720deg) scale(1.5);
+    opacity: 0;
+    border-radius: 50%;
+  }
+
+}
+
+@keyframes animateToLeft {
+
+  0% {
+    transform: translateY(0) rotate(0deg) scale(1);
+    opacity: 1;
+    border-radius: 0;
+  }
+
+  100% {
+    transform: translateY(-1000px) rotate(-360deg) scale(1.5);
+    opacity: 0;
+    border-radius: 50%;
+  }
+
+}
