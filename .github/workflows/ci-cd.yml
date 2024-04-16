@@ -23,7 +23,7 @@ jobs:
         env:
           GIT_USERNAME: ${{ secrets.GIT_USERNAME }}
           GIT_PASSWORD: ${{ secrets.GIT_PASSWORD }}
-        run: docker build -t front .
+        run: docker build -t sythilearn/front .
 
       - name: Push Docker image to Docker Hub
         run: docker push sythilearn/front
