@@ -23,24 +23,15 @@ FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Копируем SSL сертификат и ключ внутрь контейнера
-COPY ssl-cert.crt /etc/nginx/ssl-cert.crt
-COPY ssl-cert.key /etc/nginx/ssl-cert.key
+COPY /etc/letsencrypt/live/synthilearn.ru/fullchain.pem /etc/nginx/ssl-cert.crt
+COPY /etc/letsencrypt/live/synthilearn.ru/privkey.pem /etc/nginx/ssl-cert.key
 
 # Настройка Nginx для использования SSL
-RUN sed -i 's/#include \/etc\/nginx\/conf.d\/default.conf;/include \/etc\/nginx\/conf.d\/default.conf;/g' /etc/nginx/nginx.conf
-RUN echo "server {" >> /etc/nginx/conf.d/default.conf
-RUN echo "    listen 443 ssl;" >> /etc/nginx/conf.d/default.conf
-RUN echo "    ssl_certificate /etc/nginx/ssl-cert.crt;" >> /etc/nginx/conf.d/default.conf
-RUN echo "    ssl_certificate_key /etc/nginx/ssl-cert.key;" >> /etc/nginx/conf.d/default.conf
-RUN echo "    server_name _;" >> /etc/nginx/conf.d/default.conf
-RUN echo "    location / {" >> /etc/nginx/conf.d/default.conf
-RUN echo "        root /usr/share/nginx/html;" >> /etc/nginx/conf.d/default.conf
-RUN echo "        index index.html index.htm;" >> /etc/nginx/conf.d/default.conf
-RUN echo "        try_files \$uri \$uri/ /index.html;" >> /etc/nginx/conf.d/default.conf
-RUN echo "    }" >> /etc/nginx/conf.d/default.conf
-RUN echo "}" >> /etc/nginx/conf.d/default.conf
+RUN rm /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Экспонируем порт 443, на котором будет доступно приложение
+# Экспонируем порт 80 и 443, на которых будет доступно приложение
+EXPOSE 80
 EXPOSE 443
 
 # Команда для запуска Nginx
