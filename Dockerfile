@@ -23,12 +23,12 @@ FROM nginx:alpine
 COPY --from=build /app/build /usr/share/nginx/html
 
 # Копируем SSL сертификат и ключ внутрь контейнера
-COPY /etc/letsencrypt/live/synthilearn.ru/fullchain.pem /etc/nginx/ssl-cert.crt
-COPY /etc/letsencrypt/live/synthilearn.ru/privkey.pem /etc/nginx/ssl-cert.key
+COPY /synthilearn/fullchain.pem /etc/nginx/ssl-cert.crt
+COPY /privkey.pem /etc/nginx/ssl-cert.key
 
 # Настройка Nginx для использования SSL
 RUN rm /etc/nginx/conf.d/default.conf
-COPY etc/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 # Экспонируем порт 80 и 443, на которых будет доступно приложение
 EXPOSE 80
