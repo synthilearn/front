@@ -13,6 +13,7 @@ export type TToureState = {
 
 const DEFAULT_NEXT_BTN_PROPS = {
   children: 'Далее',
+    type: 'default'
 };
 
 const DEFAULT_PREV_BTN_PROPS = {
@@ -91,6 +92,7 @@ export const useTourState = create<TToureState>()(
           target: () => null,
           nextButtonProps: {
             children: 'Начать обучаться!',
+              type: 'default'
           },
           prevButtonProps: DEFAULT_PREV_BTN_PROPS,
         },

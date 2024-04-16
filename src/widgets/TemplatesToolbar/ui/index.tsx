@@ -114,6 +114,9 @@ export const TemplatesToolbar = () => {
       ></CollapseButton>
 
       <Modal
+          okButtonProps={{
+            type: 'default'
+          }}
         open={!!creatingTemplate}
         onCancel={() => setCreatingTemplate(undefined)}
         title={'Создание рабочей области'}
