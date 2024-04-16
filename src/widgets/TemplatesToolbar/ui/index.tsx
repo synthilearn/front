@@ -2,12 +2,13 @@ import styled, { css } from 'styled-components';
 import { COLOR_PRIMARY } from 'shared/const';
 import { DownOutlined } from '@ant-design/icons';
 import { Button, Flex, Modal, notification, Skeleton, Typography } from 'antd';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { IBackendRes, ITemplate } from 'shared/interfaces';
 import { $api } from 'shared/api';
 import { TemplateBlock } from 'entities/TemplateBlock';
 import { useSidebarMenuState } from 'shared/states/useSidebarMenuState';
+import { useTourState } from 'shared/states/useTourState';
 
 const fakeTemplates = [
   {
@@ -27,6 +28,10 @@ const { Text } = Typography;
 export const TemplatesToolbar = () => {
   const [isOpen, setIsOpen] = useState(true);
   const [creatingTemplate, setCreatingTemplate] = useState<ITemplate>();
+  const templatesRef = useRef(null);
+
+  const setTargetTourItem = useTourState(state => state.setTargetTourItem);
+  const tourIsOpen = useTourState(state => state.openTour);
 
   const setRefetchWorkareas = useSidebarMenuState(
     state => state.setRefetchWorkareas,
@@ -68,23 +73,38 @@ export const TemplatesToolbar = () => {
     );
   };
 
+  useEffect(() => {
+    setTargetTourItem(1, templatesRef.current);
+  }, [templatesRef.current]);
+
+  useEffect(() => {
+    if (tourIsOpen) {
+      setIsOpen(true);
+    }
+  }, [tourIsOpen]);
+
   return (
     <ToolbarWrapper $isOpen={isOpen}>
-      {!isFetching && templatesData
-        ? [...templatesData?.data?.resultData?.templates, ...fakeTemplates].map(
-            ({ name, description, isFake }, index) => (
-              <TemplateBlock
-                name={name}
-                description={description}
-                key={index}
-                hide={!isOpen}
-                isFake={isFake}
-                transitionDelay={index / 4}
-                selectCreatingTemplate={handleSelectTemplateName}
-              />
-            ),
-          )
-        : [1, 2, 3].map((elem, index) => <SkeletonButton key={elem} active />)}
+      {!isFetching && templatesData ? (
+        <Flex gap={30} ref={templatesRef}>
+          {[
+            ...templatesData?.data?.resultData?.templates,
+            ...fakeTemplates,
+          ].map(({ name, description, isFake }, index) => (
+            <TemplateBlock
+              name={name}
+              description={description}
+              key={index}
+              hide={!isOpen}
+              isFake={isFake}
+              transitionDelay={index / 4}
+              selectCreatingTemplate={handleSelectTemplateName}
+            />
+          ))}{' '}
+        </Flex>
+      ) : (
+        [1, 2, 3].map((elem, index) => <SkeletonButton key={elem} active />)
+      )}
       <CollapseButton
         $isRotate={!isOpen}
         onClick={handleCollapsingToolbar}

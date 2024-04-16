@@ -4,6 +4,8 @@ import { CloseOutlined, DesktopOutlined } from '@ant-design/icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MenuStyled } from 'shared/components/StyledComponents';
 import { IAreaItem } from 'shared/interfaces';
+import { useEffect, useRef } from 'react';
+import { useTourState } from 'shared/states/useTourState';
 
 interface ISidebarBodyProps {
   activeAreas: IAreaItem[];
@@ -16,8 +18,11 @@ const SidebarBody = ({
   deactiveAreas,
   collapsed,
 }: ISidebarBodyProps) => {
+  const menuRef = useRef();
+
   const navigate = useNavigate();
   const location = useLocation();
+  const setTargetTourItem = useTourState(state => state.setTargetTourItem);
   const items: MenuItem[] = [
     getItem(
       'Активные',
@@ -34,25 +39,32 @@ const SidebarBody = ({
     ),
   ];
 
+  useEffect(() => {
+    console.log(menuRef.current);
+    setTargetTourItem(2, menuRef.current);
+  }, [menuRef.current]);
+
   return (
     <SidebarBodyWrappper>
-      <MenuStyled
-        selectedKeys={[
-          //@ts-ignore
-          items[0]?.children?.find(
-            (area: any) => area?.key === location.pathname,
-          )?.key,
-        ]}
-        $collapsed={collapsed}
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['activeAreaTitle']}
-        mode={collapsed ? 'vertical' : 'inline'}
-        inlineIndent={16}
-        items={items}
-        onSelect={({ item, key }) => {
-          navigate(key);
-        }}
-      />
+      <div ref={menuRef}>
+        <MenuStyled
+          selectedKeys={[
+            //@ts-ignore
+            items[0]?.children?.find(
+              (area: any) => area?.key === location.pathname,
+            )?.key,
+          ]}
+          $collapsed={collapsed}
+          defaultSelectedKeys={['1']}
+          defaultOpenKeys={['activeAreaTitle']}
+          mode={collapsed ? 'vertical' : 'inline'}
+          inlineIndent={16}
+          items={items}
+          onSelect={({ item, key }) => {
+            navigate(key);
+          }}
+        />
+      </div>
     </SidebarBodyWrappper>
   );
 };
