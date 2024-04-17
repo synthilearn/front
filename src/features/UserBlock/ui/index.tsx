@@ -33,7 +33,7 @@ export const UserBlock = () => {
             <MoreOutlined />
           </EmailStyled>
         </Dropdown>
-        <Avatar shape="square" icon={<UserOutlined />} />
+        <Avatar style={{background: 'linear-gradient(to right, #6E27F8, #20D9C0)', border: 'none'}} shape="square" icon={<UserOutlined />} />
       </Flex>
     </div>
   );

@@ -43,7 +43,7 @@ export const PageAuth = () => {
             wrapper="span"
             cursor={false}
             speed={{ type: 'keyStrokeDelayInMs', value: 50 }}
-            style={{ fontSize: '2em', display: 'inline-block' }}
+            style={{ fontSize: '2.5em', display: 'inline-block' }}
           />
           {animationStep > 0 && (
             <TypeAnimation
@@ -57,8 +57,9 @@ export const PageAuth = () => {
               wrapper="span"
               cursor={true}
               style={{
-                fontSize: '1.5em',
-                lineHeight: '2.5rem',
+                maxWidth: '900px',
+                fontSize: '2em',
+                lineHeight: '3rem',
                 display: 'inline-block',
               }}
             />
@@ -68,8 +69,11 @@ export const PageAuth = () => {
             align={'center'}
             className={animationStep === 2 ? 'show' : ''}
           >
-            <Typography.Title level={4}>
-              Пройдите небольшой гайд, чтобы лучше понять, как работает
+            <Typography.Title level={3}>
+              <HighlightText>
+                Пройдите
+                <img src={require('/src/shared/assets/png/underline.png')} />
+              </HighlightText> небольшой гайд, чтобы лучше понять, как работает
               платформа 👉
             </Typography.Title>
             <GoGide onClick={() => setOpenTour(true)}>Начать гайд</GoGide>
@@ -150,3 +154,16 @@ const GoGide = styled.div`
     background: #3e5f8a;
   }
 `;
+
+const HighlightText = styled.span`
+position: relative;
+
+  & img {
+    position: absolute;
+    bottom: -12px;
+    left: -5px;
+    right: 5px;
+    width: 110%;
+  }
+  
+`
