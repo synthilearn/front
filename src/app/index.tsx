@@ -1,6 +1,5 @@
 import React from 'react';
 import './styles/index.scss';
-import { useAppState } from 'shared/states/useAppState';
 import { ConfigProvider, Spin } from 'antd';
 import AppAuthRouter from 'app/AppAuthRouter';
 import {
@@ -11,7 +10,6 @@ import {
 } from 'shared/const';
 
 const App = () => {
-  const isLoading = useAppState(state => state.isLoading);
   return (
     <div className="app">
       <ConfigProvider
@@ -57,7 +55,6 @@ const App = () => {
       >
         <AppAuthRouter />
       </ConfigProvider>
-      {isLoading && <Spin fullscreen />}
     </div>
   );
 };

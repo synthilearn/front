@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Divider, Flex, Form, Input, notification, Spin } from 'antd';
 import AuthBtn from 'shared/components/AuthBtn';
 import { GithubOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { $api } from 'shared/api';
 import { IAuthLink, IBackendRes, ILoginData } from 'shared/interfaces';
 import { useMutation } from '@tanstack/react-query';
@@ -11,10 +11,12 @@ import { AxiosError } from 'axios';
 import { useEffect } from 'react';
 import { emailValidator } from 'shared/helpers/emailValidator';
 import { ENTER_FIELD, FILED_IS_REQUIRED } from 'shared/const';
+import { useAppState } from 'shared/states/useAppState';
 
 export const LoginModal = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
+  const { access_token, refresh_token } = useParams();
 
   const { mutate: getGithubLink, isPending: isLoadingGithub } = useMutation({
     mutationFn: () => {
@@ -32,28 +34,17 @@ export const LoginModal = () => {
   });
 
   const setTokens = () => {
-    const queryString = window.location.search;
-    const urlParams = new URLSearchParams(queryString);
-
-    if (queryString) {
-      for (const [key, value] of urlParams) {
-        if (key === 'access_token') {
-          localStorage.setItem('accessToken', value);
-        } else if (key === 'refresh_token') {
-          localStorage.setItem('refreshToken', value);
-        }
-      }
-
-      window.location.reload();
-    }
+    localStorage.setItem('accessToken', access_token);
+    localStorage.setItem('refreshToken', refresh_token);
+    useAppState.getState().setIsAuth();
   };
 
   useEffect(() => {
-    if (!!window.location.search) {
+    if (access_token && refresh_token) {
+      console.log(access_token, refresh_token);
       setTokens();
     }
-    setTokens();
-  }, []);
+  }, [access_token, refresh_token]);
 
   const { mutate: login, isPending: isLoadingLogin } = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) => {
@@ -77,7 +68,7 @@ export const LoginModal = () => {
         description: 'Вы успешно вошли в аккаунт',
       });
 
-      window.location.reload();
+      useAppState.getState().setIsAuth();
     },
     onError: (err: AxiosError<IBackendRes<ILoginData>>) => {
       if (err.response?.data?.message.includes("Passwords don't match")) {

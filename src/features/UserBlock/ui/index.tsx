@@ -9,7 +9,9 @@ import { useTourState } from 'shared/states/useTourState';
 export const UserBlock = () => {
   const userBlockRef = useRef();
   const getUserEmail = () => {
-    return jwtDecode(localStorage.getItem('accessToken')).sub;
+    if (localStorage.getItem('accessToken')) {
+      return jwtDecode(localStorage.getItem('accessToken')).sub;
+    } else '';
   };
 
   const setTargetTourItem = useTourState(state => state.setTargetTourItem);
@@ -33,7 +35,14 @@ export const UserBlock = () => {
             <MoreOutlined />
           </EmailStyled>
         </Dropdown>
-        <Avatar style={{background: 'linear-gradient(to right, #6E27F8, #20D9C0)', border: 'none'}} shape="square" icon={<UserOutlined />} />
+        <Avatar
+          style={{
+            background: 'linear-gradient(to right, #6E27F8, #20D9C0)',
+            border: 'none',
+          }}
+          shape="square"
+          icon={<UserOutlined />}
+        />
       </Flex>
     </div>
   );

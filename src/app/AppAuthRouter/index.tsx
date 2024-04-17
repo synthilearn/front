@@ -2,13 +2,14 @@ import { Route, Routes } from 'react-router-dom';
 import { privateRoutes } from 'app/AppAuthRouter/privateRoutes';
 import { publicRoutes } from 'app/AppAuthRouter/publicRoutes';
 import Layout from 'app/Layout';
+import {useAppState} from "shared/states/useAppState";
 
 const AppAuthRouter = () => {
-  const isLogged = !!localStorage.getItem('accessToken');
+  const isAuthUser = useAppState(state => state.isAuthUser)
 
   return (
     <Routes>
-      {isLogged ? (
+      {isAuthUser ? (
         <>
           {privateRoutes.map(({ path, element }) => (
             <Route

@@ -1,7 +1,8 @@
 import styled from 'styled-components';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider, notification } from 'antd';
 import { LogoutOutlined } from '@ant-design/icons';
 import { MenuStyled } from 'shared/components/StyledComponents';
+import { useAppState } from 'shared/states/useAppState';
 
 interface ISidebarFooterProps {
   collapsed: boolean;
@@ -28,7 +29,12 @@ export const SidebarFooter = ({ collapsed }: ISidebarFooterProps) => {
               icon: <LogoutOutlined />,
               onClick: () => {
                 localStorage.clear();
-                window.location.reload();
+                useAppState.getState().setIsAuth();
+
+                notification.success({
+                  message: undefined,
+                  description: 'Вы вышли из аккаунта!',
+                });
               },
             },
           ]}

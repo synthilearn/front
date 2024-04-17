@@ -1,4 +1,5 @@
 import axios from 'axios';
+import {useAppState} from "shared/states/useAppState";
 
 export const API_URL = 'https://synthi-learn.online';
 
@@ -55,7 +56,8 @@ $api.interceptors.response.use(
       } catch (e) {
         localStorage.removeItem('accessToken');
         localStorage.removeItem('refreshToken');
-        window.location.reload();
+        useAppState.getState().setIsAuth()
+        console.log(e)
       }
     }
     throw error;

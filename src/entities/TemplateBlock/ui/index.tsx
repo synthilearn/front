@@ -28,7 +28,7 @@ export const TemplateBlock = ({
   return (
     <TemplateWrapper
       $isHide={hide}
-      transitionDelay={transitionDelay}
+      $transitionDelay={transitionDelay}
       $isFake={isFake}
       onClick={handleClick}
     >
@@ -44,7 +44,7 @@ export const TemplateBlock = ({
 
 const TemplateWrapper = styled.div<{
   $isHide: boolean;
-  transitionDelay: number;
+  $transitionDelay: number;
   $isFake: boolean;
 }>`
   width: 200px;
@@ -64,7 +64,7 @@ const TemplateWrapper = styled.div<{
   transition:
     all 0.3s,
     transform 0.3s;
-  transition-delay: ${({ transitionDelay }) => transitionDelay}s, 0s;
+  transition-delay: ${({ $transitionDelay }) => $transitionDelay}s, 0s;
 
   span.icon-wrapper {
     opacity: 0;

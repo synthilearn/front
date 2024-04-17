@@ -1,27 +1,26 @@
 import create from 'zustand';
-import {devtools} from 'zustand/middleware';
-import {produce} from "immer";
+import { devtools } from 'zustand/middleware';
+import { produce } from 'immer';
 
-export type TTableState = {
-    isLoading: boolean;
-    setIsLoading: (isLoading: boolean) => void
+export type TAppState = {
+    isAuthUser: boolean;
+    setIsAuth: () => void;
 };
-export const useAppState = create<TTableState>()(
+export const useAppState = create<TAppState>()(
     devtools(
-        (set) => ({
-            isLoading: false,
-            setIsLoading: (isLoading) => {
+        (set, get) => ({
+            isAuthUser: !!localStorage.getItem('accessToken'),
+            setIsAuth: () => {
                 set(
-                    produce((draft: TTableState) => {
-                        draft.isLoading = isLoading
-                    }
-                    )
-                )
-            }
+                    produce((draft: TAppState) => {
+                        draft.isAuthUser = !get().isAuthUser;
+                    }),
+                );
+            },
         }),
         {
             anonymousActionType: 'useAppState action',
             name: 'useAppState',
-        }
-    )
+        },
+    ),
 );
