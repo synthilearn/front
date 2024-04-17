@@ -28,7 +28,7 @@ COPY /synthilearn/privkey.pem /etc/nginx/ssl-cert.key
 
 # Настройка Nginx для использования SSL
 RUN rm /etc/nginx/conf.d/default.conf
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Экспонируем порт 80 и 443, на которых будет доступно приложение
 EXPOSE 80
