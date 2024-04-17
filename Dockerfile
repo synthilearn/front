@@ -21,6 +21,7 @@ FROM nginx:alpine
 
 # Копируем собранное приложение из предыдущего образа в директорию Nginx
 COPY --from=build /app/build /usr/share/nginx/html
+COPY --from=build /app/build /etc/nginx/html
 
 # Копируем SSL сертификат и ключ внутрь контейнера
 COPY /synthilearn/fullchain.pem /etc/nginx/ssl-cert.crt
