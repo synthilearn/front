@@ -16,7 +16,6 @@ import { useAppState } from 'shared/states/useAppState';
 export const LoginModal = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-  const { access_token, refresh_token } = useParams();
 
   const { mutate: getGithubLink, isPending: isLoadingGithub } = useMutation({
     mutationFn: () => {
@@ -27,24 +26,39 @@ export const LoginModal = () => {
     onSuccess: ({ data: { resultData } }) => {
       window.location.replace(resultData.links.github);
 
-      setTokens();
+      setTimeout(() => {
+        setTokens();
+      }, 1000);
     },
-    onError: err => {},
-    onSettled: () => {},
   });
 
   const setTokens = () => {
-    localStorage.setItem('accessToken', access_token);
-    localStorage.setItem('refreshToken', refresh_token);
-    useAppState.getState().setIsAuth();
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+
+    if (queryString) {
+      for (const [key, value] of urlParams) {
+        if (key === 'access_token') {
+          localStorage.setItem('accessToken', value);
+        } else if (key === 'refresh_token') {
+          localStorage.setItem('refreshToken', value);
+        }
+      }
+
+      notification.success({
+        message: 'Вход выполнен',
+        description: 'Вы успешно авторизовались через Github!',
+      });
+
+      useAppState.getState().setIsAuth();
+    }
   };
 
   useEffect(() => {
-    if (access_token && refresh_token) {
-      console.log(access_token, refresh_token);
+    if (!!window.location.search) {
       setTokens();
     }
-  }, [access_token, refresh_token]);
+  }, []);
 
   const { mutate: login, isPending: isLoadingLogin } = useMutation({
     mutationFn: ({ email, password }: { email: string; password: string }) => {

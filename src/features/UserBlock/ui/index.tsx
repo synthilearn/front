@@ -9,7 +9,7 @@ import { useTourState } from 'shared/states/useTourState';
 export const UserBlock = () => {
   const userBlockRef = useRef();
   const getUserEmail = () => {
-    if (localStorage.getItem('accessToken')) {
+    if (!!localStorage.getItem('accessToken')) {
       return jwtDecode(localStorage.getItem('accessToken')).sub;
     } else '';
   };
