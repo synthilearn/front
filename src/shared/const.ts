@@ -10,3 +10,38 @@ export const FILED_IS_REQUIRED = {
   required: true,
   message: ENTER_FIELD,
 };
+
+export const TYPES_WORD_OPTIONS = [
+  {
+    value: 'NOUN',
+    label: 'Существительное',
+  },
+  {
+    value: 'PRONOUN',
+    label: 'Местоимение',
+  },
+  {
+    value: 'VERB',
+    label: 'Глагол',
+  },
+  {
+    value: 'ADJECTIVE',
+    label: 'Прилагательное',
+  },
+  {
+    value: 'ADVERB',
+    label: 'Наречие',
+  },
+  {
+    value: 'PREPOSITION',
+    label: 'Предлог',
+  },
+  {
+    value: 'CONJUNCTION',
+    label: 'Союз',
+  },
+  {
+    value: 'OTHER',
+    label: 'Другое',
+  },
+];

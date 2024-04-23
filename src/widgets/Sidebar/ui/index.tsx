@@ -4,12 +4,13 @@ import { MenuFoldOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import SidebarBody from 'widgets/Sidebar/ui/SidebarBody';
 import { SidebarFooter } from 'widgets/Sidebar/ui/SidebarFooter';
-import { IAreaItem, IBackendRes } from 'shared/interfaces';
-import { useNavigate } from 'react-router-dom';
+import { IAreaItem, IBackendRes, IWorkarea } from 'shared/interfaces';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { $api } from 'shared/api';
 import { useEffect, useMemo } from 'react';
 import { useSidebarMenuState } from 'shared/states/useSidebarMenuState';
+import { useCurrentWorkarea } from 'shared/states/useCurrentWorkarea';
 
 interface ISidebarProps {
   siderIsOpen: boolean;
@@ -20,28 +21,23 @@ const areaRoutes: any = {
   'Изучение языков': '/active-area/learn-language',
 };
 
-const activeAreas: IAreaItem[] = [
-  {
-    label: 'Изучение языков',
-    clickLink: '/active-area/learn-language',
-  },
-];
-
 const deactiveAreas: IAreaItem[] = [];
 
 export const Sidebar = ({ changeOpenSider, siderIsOpen }: ISidebarProps) => {
   const navigate = useNavigate();
+  const location = useLocation();
   const isRefetch = useSidebarMenuState(state => state.refetchWorkareas);
   const setIsRefetch = useSidebarMenuState(state => state.setRefetchWorkareas);
+  const getCurrentWorkarea = useCurrentWorkarea(
+    state => state.getCurrentWorkarea,
+  );
 
-  const {
-    data: workareasData,
-    isFetching,
-    refetch: refetchWorkareas,
-  } = useQuery({
+  const { data: workareasData, refetch: refetchWorkareas } = useQuery({
     queryKey: ['workareas'],
     queryFn: () => {
-      return $api.get<IBackendRes<any>>('workarea-service/v1/workarea/all');
+      return $api.get<IBackendRes<IWorkarea[]>>(
+        'workarea-service/v1/workarea/all',
+      );
     },
   });
 
@@ -68,6 +64,22 @@ export const Sidebar = ({ changeOpenSider, siderIsOpen }: ISidebarProps) => {
       handleRefetchWorkareas();
     }
   }, [isRefetch]);
+
+  useEffect(() => {
+    let neededKey: string;
+    for (const key in areaRoutes) {
+      if (location.pathname.includes(areaRoutes[key])) {
+        neededKey = key;
+      }
+    }
+    if (neededKey) {
+      const currentWorkareaId = workareasData?.data.resultData.find(
+        (area: IWorkarea) => area.name === neededKey,
+      )?.id;
+
+      currentWorkareaId && getCurrentWorkarea(currentWorkareaId);
+    }
+  }, [location.pathname, workareasData]);
   return (
     <SidebarWrapper>
       <div>

@@ -8,3 +8,14 @@ export enum ScreenBreakpoints {
   SCREEN_1440 = 1440,
   SCREEN_1536 = 1536,
 }
+
+export enum ETagColors {
+  'magenta',
+  'red',
+  'volcano',
+  'orange',
+  'gold',
+  'lime',
+  'green',
+  'cyan',
+}

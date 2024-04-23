@@ -1,4 +1,9 @@
-import { TTemplateStatus } from 'shared/types';
+import {
+  TPartsOfSpeech,
+  TTemplateStatus,
+  TWord,
+  TWorkareaStatus,
+} from 'shared/types';
 
 export interface IAreaItem {
   label: string;
@@ -32,6 +37,21 @@ export interface IUserData {
   status: 'ACTIVE' | 'EMAIL_SET';
 }
 
+export interface IWorkarea {
+  id: string;
+  name: string;
+  status: TWorkareaStatus;
+  type: string;
+  widgets: IWorkareaWidget[];
+  workspaceId: string;
+}
+
+export interface IWorkareaWidget {
+  id: string;
+  name: string;
+  type: string;
+}
+
 export interface ITemplate {
   type: string;
   name: string;
@@ -39,4 +59,13 @@ export interface ITemplate {
   available: null;
   description: string;
   isFake: boolean;
+}
+
+export interface IWord {
+  id: number;
+  dictionaryId: string;
+  text: string;
+  type: TWord;
+  partOfSpeech: TPartsOfSpeech;
+  translations: string[];
 }
