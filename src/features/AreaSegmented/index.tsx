@@ -33,7 +33,7 @@ const SegmentedStyled = styled(Segmented)`
   border-left: 2px solid #1b5583;
 
   & .ant-segmented-item {
-    height: 90px;
+    height: 80px;
     position: relative;
     border-right: 2px solid #1b5583;
     border-radius: 0;

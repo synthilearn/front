@@ -19,3 +19,14 @@ export enum ETagColors {
   'green',
   'cyan',
 }
+
+export enum EWordTypes {
+  'NOUN' = 'Существительное',
+  'PRONOUN' = 'Местоимение',
+  'VERB' = 'Глагол',
+  'ADJECTIVE' = 'Прилагательное',
+  'ADVERB' = 'Наречие',
+  'PREPOSITION' = 'Предлог',
+  'CONJUNCTION' = 'Союз',
+  'OTHER' = 'Другое',
+}

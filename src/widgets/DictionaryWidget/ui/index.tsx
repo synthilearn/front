@@ -1,28 +1,52 @@
 import styled from 'styled-components';
 import { DictionaryBook } from 'features/DictionaryBook';
-import {
-  AutoComplete,
-  Button,
-  Flex,
-  Form,
-  Input,
-  InputRef,
-  notification,
-  Pagination,
-  Select,
-  Tag,
-  theme,
-  Tooltip,
-} from 'antd';
+import { AutoComplete, Button, Flex, Pagination } from 'antd';
 import { useEffect, useRef, useState } from 'react';
 import AddWordModal from 'features/AddWordModal';
 import { useCurrentWorkarea } from 'shared/states/useCurrentWorkarea';
+import { DictionarySettingsDrawer } from 'features/DictionarySettingsDrawer';
+import { useQuery } from '@tanstack/react-query';
+import { $api } from 'shared/api';
+import { IBackendRes, IUserData } from 'shared/interfaces';
 
 export const DictionaryWidget = () => {
   const bookRef = useRef<null | HTMLDivElement>(null);
   const [wordsCount, setWordsCount] = useState<number>();
   const [openAddWordModal, setOpenAddWordModal] = useState(false);
+  const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const currentWorkarea = useCurrentWorkarea(state => state.currentWorkarea);
+
+  const {
+    data: wordsData,
+    isFetching,
+    refetch,
+  } = useQuery({
+    queryKey: ['words'],
+    enabled: !!wordsCount,
+    queryFn: () => {
+      return $api.post<IBackendRes<any>>('dictionary-service/v1/phrase/all', {
+        dictionaryId: '13617628-2f2c-4f1d-94b2-c95391018441',
+        page: 0,
+        size: wordsCount,
+        showTranslates: true,
+        partsOfSpeech: [
+          'NOUN',
+          'PRONOUN',
+          'VERB',
+          'ADJECTIVE',
+          'ADVERB',
+          'PREPOSITION',
+          'CONJUNCTION',
+          'INTERJECTION',
+          'OTHER',
+        ],
+        phraseTypes: ['WORD', 'PHRASE'],
+        startDate: '2024-03-18',
+        endDate: '2025-11-11',
+        groups: ['PART_OF_SPEECH', 'LETTER'], //'PART_OF_SPEECH', 'LETTER'
+      });
+    },
+  });
 
   useEffect(() => {
     if (bookRef.current) {
@@ -38,16 +62,27 @@ export const DictionaryWidget = () => {
     }
   }, [bookRef]);
 
-  console.log(currentWorkarea);
   return (
     <DictionaryWrapper vertical gap={15}>
       <Flex justify={'space-between'}>
-        <AutoComplete placeholder={'Поиск слова'} style={{ width: '300px' }} />
+        <Flex gap={12}>
+          <AutoComplete
+            placeholder={'Поиск слова'}
+            style={{ width: '300px' }}
+          />
+          <Button onClick={() => setOpenSettingsDrawer(true)}>
+            Настроить словарь
+          </Button>
+        </Flex>
         <Button onClick={() => setOpenAddWordModal(true)}>
           Добавить слово
         </Button>
       </Flex>
-      <DictionaryBook ref={bookRef} />
+      <DictionaryBook
+        groupsCount={2}
+        words={wordsData?.data?.resultData?.phrases}
+        ref={bookRef}
+      />
       <Flex justify={'flex-end'}>
         <Pagination defaultCurrent={1} total={50} />
       </Flex>
@@ -58,6 +93,10 @@ export const DictionaryWidget = () => {
         }
         open={openAddWordModal}
         onClose={() => setOpenAddWordModal(false)}
+      />
+      <DictionarySettingsDrawer
+        open={openSettingsDrawer}
+        onClose={() => setOpenSettingsDrawer(false)}
       />
     </DictionaryWrapper>
   );

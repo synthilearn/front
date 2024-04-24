@@ -1,0 +1,1 @@
+export { DictionarySettingsDrawer } from './ui';
