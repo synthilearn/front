@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { DictionaryBook } from 'features/DictionaryBook';
 import { AutoComplete, Button, Flex, Pagination } from 'antd';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import AddWordModal from 'features/AddWordModal';
 import { useCurrentWorkarea } from 'shared/states/useCurrentWorkarea';
 import { DictionarySettingsDrawer } from 'features/DictionarySettingsDrawer';
@@ -16,16 +16,22 @@ export const DictionaryWidget = () => {
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const currentWorkarea = useCurrentWorkarea(state => state.currentWorkarea);
 
+  const dictionaryId = useMemo(() => {
+    return currentWorkarea?.widgets?.find(
+      widget => widget.type === 'DICTIONARY',
+    )?.id;
+  }, [currentWorkarea]);
+
   const {
     data: wordsData,
     isFetching,
     refetch,
   } = useQuery({
     queryKey: ['words'],
-    enabled: !!wordsCount,
+    enabled: !!wordsCount && !!dictionaryId,
     queryFn: () => {
       return $api.post<IBackendRes<any>>('dictionary-service/v1/phrase/all', {
-        dictionaryId: '13617628-2f2c-4f1d-94b2-c95391018441',
+        dictionaryId,
         page: 0,
         size: wordsCount,
         showTranslates: true,
@@ -87,10 +93,7 @@ export const DictionaryWidget = () => {
         <Pagination defaultCurrent={1} total={50} />
       </Flex>
       <AddWordModal
-        dictionaryId={
-          currentWorkarea?.widgets?.find(widget => widget.type === 'DICTIONARY')
-            ?.id
-        }
+        dictionaryId={dictionaryId}
         open={openAddWordModal}
         onClose={() => setOpenAddWordModal(false)}
       />
