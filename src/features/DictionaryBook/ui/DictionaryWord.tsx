@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { Flex } from 'antd';
+import { ITranslation } from 'shared/interfaces';
 
 interface IProps {
   word: string;
-  translations: string[];
+  translations: ITranslation[] | null;
   $leftMargin: number;
 }
 const DictionaryWord = ({ word, translations, $leftMargin }: IProps) => {
@@ -13,8 +14,17 @@ const DictionaryWord = ({ word, translations, $leftMargin }: IProps) => {
       align={'center'}
       gap={5}
     >
-      <Word>{`${word} -`}</Word>
-      <Translations>{translations.join(', ')}</Translations>
+      <Word>{`${word} ${!!translations ? '-' : ''}`}</Word>
+      {translations && (
+        <Translations>
+          {translations
+            .reduce(
+              (acc: string[], curr: any) => [...acc, curr.translationText],
+              [],
+            )
+            .join(', ')}
+        </Translations>
+      )}
     </DictionaryWordWrapper>
   );
 };

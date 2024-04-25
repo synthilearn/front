@@ -12,10 +12,12 @@ import { TYPES_WORD_OPTIONS } from 'shared/const';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
+import { useDictionaryState } from 'widgets/DictionaryWidget/state/useDictionaryState';
 
 interface IProps {
   open: boolean;
   onClose: () => void;
+  refetchWords: () => void;
 }
 
 const dateFormat = 'YYYY-MM-DD';
@@ -30,8 +32,29 @@ const sharedProps: SelectProps = {
 
 const { RangePicker } = DatePicker;
 
-export const DictionarySettingsDrawer = ({ open, onClose }: IProps) => {
+export const DictionarySettingsDrawer = ({
+  open,
+  onClose,
+  refetchWords,
+}: IProps) => {
   const [form] = Form.useForm();
+  const dictionarySettings = useDictionaryState(
+    state => state.dictionarySettings,
+  );
+  const setDictionarySettings = useDictionaryState(
+    state => state.setDictionarySettings,
+  );
+
+  const handleSave = () => {
+    form.validateFields().then(values => {
+      setDictionarySettings(values);
+
+      setTimeout(() => {
+        refetchWords();
+        onClose();
+      }, 500);
+    });
+  };
 
   return (
     <Drawer
@@ -42,21 +65,14 @@ export const DictionarySettingsDrawer = ({ open, onClose }: IProps) => {
       footer={
         <FooterWrapper gap={12} justify={'flex-end'}>
           <Button onClick={onClose}>Назад</Button>
-          <Button>Сохранить</Button>
+          <Button onClick={handleSave}>Сохранить</Button>
         </FooterWrapper>
       }
     >
-      <Form
-        form={form}
-        layout="vertical"
-        initialValues={{
-          showTranslates: true,
-          partsOfSpeech: ['NOUN'],
-        }}
-      >
+      <Form form={form} layout="vertical" initialValues={dictionarySettings}>
         <Flex vertical>
           <TitleStyled>Показывать переводы</TitleStyled>
-          <Form.Item valuePropName={'checked'} name={'showTranslates'}>
+          <Form.Item valuePropName={'checked'} name={'showTranslation'}>
             <Switch />
           </Form.Item>
           <TitleStyled>Фильтровать по</TitleStyled>

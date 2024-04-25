@@ -8,6 +8,7 @@ import { DictionarySettingsDrawer } from 'features/DictionarySettingsDrawer';
 import { useQuery } from '@tanstack/react-query';
 import { $api } from 'shared/api';
 import { IBackendRes, IUserData } from 'shared/interfaces';
+import { useDictionaryState } from 'widgets/DictionaryWidget/state/useDictionaryState';
 
 export const DictionaryWidget = () => {
   const bookRef = useRef<null | HTMLDivElement>(null);
@@ -15,6 +16,14 @@ export const DictionaryWidget = () => {
   const [openAddWordModal, setOpenAddWordModal] = useState(false);
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const currentWorkarea = useCurrentWorkarea(state => state.currentWorkarea);
+  const getDictionarySettings = useDictionaryState(
+    state => state.getDictionarySettings,
+  );
+  const dictionarySettings = useDictionaryState(
+    state => state.dictionarySettings,
+  );
+
+  console.log(dictionarySettings);
 
   const dictionaryId = useMemo(() => {
     return currentWorkarea?.widgets?.find(
@@ -25,34 +34,25 @@ export const DictionaryWidget = () => {
   const {
     data: wordsData,
     isFetching,
-    refetch,
+    refetch: refetchWords,
   } = useQuery({
     queryKey: ['words'],
-    enabled: !!wordsCount && !!dictionaryId,
+    enabled: !!dictionaryId && !!wordsCount && !!dictionarySettings,
     queryFn: () => {
       return $api.post<IBackendRes<any>>('dictionary-service/v1/phrase/all', {
         dictionaryId,
         page: 0,
         size: wordsCount,
-        showTranslates: true,
-        partsOfSpeech: [
-          'NOUN',
-          'PRONOUN',
-          'VERB',
-          'ADJECTIVE',
-          'ADVERB',
-          'PREPOSITION',
-          'CONJUNCTION',
-          'INTERJECTION',
-          'OTHER',
-        ],
-        phraseTypes: ['WORD', 'PHRASE'],
-        startDate: '2024-03-18',
-        endDate: '2025-11-11',
-        groups: ['PART_OF_SPEECH', 'LETTER'], //'PART_OF_SPEECH', 'LETTER'
+        ...dictionarySettings,
       });
     },
   });
+
+  useEffect(() => {
+    if (dictionaryId) {
+      getDictionarySettings(dictionaryId);
+    }
+  }, [dictionaryId]);
 
   useEffect(() => {
     if (bookRef.current) {
@@ -86,18 +86,20 @@ export const DictionaryWidget = () => {
       </Flex>
       <DictionaryBook
         groupsCount={2}
-        words={wordsData?.data?.resultData?.phrases}
+        words={wordsData?.data?.resultData}
         ref={bookRef}
       />
       <Flex justify={'flex-end'}>
         <Pagination defaultCurrent={1} total={50} />
       </Flex>
       <AddWordModal
+        refetchWords={refetchWords}
         dictionaryId={dictionaryId}
         open={openAddWordModal}
         onClose={() => setOpenAddWordModal(false)}
       />
       <DictionarySettingsDrawer
+        refetchWords={refetchWords}
         open={openSettingsDrawer}
         onClose={() => setOpenSettingsDrawer(false)}
       />

@@ -3,6 +3,7 @@ import { forwardRef, MutableRefObject, Ref, useMemo, useRef } from 'react';
 import DictionaryWord from 'features/DictionaryBook/ui/DictionaryWord';
 import { Flex } from 'antd';
 import { EWordTypes } from 'shared/enums';
+import { IWord } from 'shared/interfaces';
 
 interface IProps {
   ref: Ref<HTMLDivElement>;
@@ -18,15 +19,12 @@ export const DictionaryBook = forwardRef(
       }
       const array = [];
 
-      const getWordsArray = (words: any) =>
+      const getWordsArray = (words: IWord[]) =>
         words?.map((word: any) => (
           <DictionaryWord
             $leftMargin={groupsCount * 10}
             word={word.text}
-            translations={word.phraseTranslates.reduce(
-              (acc: string[], curr: any) => [...acc, curr.translationText],
-              [],
-            )}
+            translations={word.phraseTranslates}
             key={word.id}
           />
         ));
@@ -70,6 +68,8 @@ export const DictionaryBook = forwardRef(
       }
       return array;
     }, [words]);
+
+    console.log(wordsArray);
 
     return (
       <DictionaryBookWrapper ref={ref}>
