@@ -28,5 +28,6 @@ export enum EWordTypes {
   'ADVERB' = 'Наречие',
   'PREPOSITION' = 'Предлог',
   'CONJUNCTION' = 'Союз',
+  'INTERJECTION' = 'Междометие',
   'OTHER' = 'Другое',
 }

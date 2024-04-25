@@ -41,6 +41,10 @@ export const TYPES_WORD_OPTIONS = [
     label: 'Союз',
   },
   {
+    value: 'INTERJECTION',
+    label: 'Междометие',
+  },
+  {
     value: 'OTHER',
     label: 'Другое',
   },
