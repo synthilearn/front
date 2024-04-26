@@ -85,13 +85,15 @@ const AddWordModal = ({
       dictionaryId: dictionaryId,
       text: values.text,
       type: isSingleWordOrPhrase(values.text) ? 'WORD' : 'PHRASE',
-      translations: tags,
+      phraseTranslates: tags,
     };
     createWord(payload);
   };
 
   const handleClose = (removedTag: ITranslation) => {
-    const newTags = tags.filter(tag => tag.text !== removedTag.text);
+    const newTags = tags.filter(
+      tag => tag.translationText !== removedTag.translationText,
+    );
     setTags(newTags);
   };
 
@@ -104,8 +106,8 @@ const AddWordModal = ({
   };
 
   const handleInputConfirm = () => {
-    if (inputValue && !tags.some(tag => tag.text === inputValue)) {
-      setTags([...tags, { text: inputValue, partOfSpeech: 'NOUN' }]);
+    if (inputValue && !tags.some(tag => tag.translationText === inputValue)) {
+      setTags([...tags, { translationText: inputValue, partOfSpeech: 'NOUN' }]);
     }
     setInputVisible(false);
     setInputValue('');
@@ -116,13 +118,11 @@ const AddWordModal = ({
   };
 
   const handleEditInputConfirm = () => {
-    console.log('зашел');
     const newTags = [...JSON.parse(JSON.stringify(tags))];
     newTags[editInputIndex].text = editInputValue;
     setTags(newTags);
     setEditInputIndex(-1);
     setEditInputValue('');
-    console.log('вышел');
   };
 
   const choosePartOfSpeech = (key: TPartsOfSpeech, index: number) => {
@@ -186,7 +186,7 @@ const AddWordModal = ({
                 return (
                   <Input
                     ref={editInputRef}
-                    key={tag.text}
+                    key={tag.translationText}
                     size="small"
                     style={tagInputStyle}
                     value={editInputValue}
@@ -196,7 +196,7 @@ const AddWordModal = ({
                   />
                 );
               }
-              const isLongTag = tag.text.length > 20;
+              const isLongTag = tag.translationText.length > 20;
               const tagElem = (
                 <Dropdown
                   trigger={['hover']}
@@ -215,7 +215,7 @@ const AddWordModal = ({
                   <TagStyled
                     // @ts-ignore
                     color={ETagColors[index]}
-                    key={tag.text}
+                    key={tag.translationText}
                     closable
                     style={{ userSelect: 'none' }}
                     onClose={() => handleClose(tag)}
@@ -224,18 +224,20 @@ const AddWordModal = ({
                       onDoubleClick={e => {
                         if (index !== 0) {
                           setEditInputIndex(index);
-                          setEditInputValue(tag.text);
+                          setEditInputValue(tag.translationText);
                           e.preventDefault();
                         }
                       }}
                     >
-                      {isLongTag ? `${tag.text.slice(0, 20)}...` : tag.text}
+                      {isLongTag
+                        ? `${tag.translationText.slice(0, 20)}...`
+                        : tag.translationText}
                     </span>
                   </TagStyled>
                 </Dropdown>
               );
               return isLongTag ? (
-                <Tooltip title={tag.text} key={tag.text}>
+                <Tooltip title={tag.translationText} key={tag.translationText}>
                   {tagElem}
                 </Tooltip>
               ) : (

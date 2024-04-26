@@ -50,7 +50,7 @@ const Word = styled.span`
 `;
 
 const Translations = styled.span`
-  width: max-content;
+  max-width: 350px;
   white-space: nowrap; /* Запрет переноса строки */
   overflow: hidden; /* Скрытие текста, который не помещается */
   text-overflow: ellipsis; /* Добавление троеточия в конце длинной строки */

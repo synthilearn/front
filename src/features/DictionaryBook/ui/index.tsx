@@ -3,16 +3,17 @@ import { forwardRef, MutableRefObject, Ref, useMemo, useRef } from 'react';
 import DictionaryWord from 'features/DictionaryBook/ui/DictionaryWord';
 import { Flex } from 'antd';
 import { EWordTypes } from 'shared/enums';
-import { IWord } from 'shared/interfaces';
+import { ITranslation, IWord } from 'shared/interfaces';
 
 interface IProps {
   ref: Ref<HTMLDivElement>;
   words: any;
   groupsCount: number;
+  wordsCount: number | undefined;
 }
 
 export const DictionaryBook = forwardRef(
-  ({ words, groupsCount }: IProps, ref: Ref<HTMLDivElement>) => {
+  ({ words, groupsCount, wordsCount }: IProps, ref: Ref<HTMLDivElement>) => {
     const wordsArray = useMemo(() => {
       if (!words) {
         return [];
@@ -25,7 +26,12 @@ export const DictionaryBook = forwardRef(
             $leftMargin={groupsCount * 10}
             word={word.text}
             translations={word.phraseTranslates}
-            key={word.id}
+            key={
+              word.id +
+              word.phraseTranslates.map(
+                (translation: ITranslation) => translation.translationText,
+              )
+            }
           />
         ));
 
@@ -40,21 +46,23 @@ export const DictionaryBook = forwardRef(
           if (words.hasOwnProperty(key)) {
             const words2 = words[key];
             array.push(
-              <DictionaryTitle $level={1} key={key}>
+              <DictionaryTitle $level={1} key={key + String(Math.random())}>
                 {getTitle(key)}
               </DictionaryTitle>,
             );
 
-            if (!Array.isArray(words)) {
+            if (!Array.isArray(words2)) {
               for (const key2 in words2) {
-                const words3 = words2[key2];
                 if (words2.hasOwnProperty(key2)) {
+                  const words3 = words2[key2];
                   array.push(
-                    <DictionaryTitle $level={2} key={key2}>
+                    <DictionaryTitle
+                      $level={2}
+                      key={key2 + String(Math.random())}
+                    >
                       {getTitle(key2)}
                     </DictionaryTitle>,
                   );
-
                   array.push(...getWordsArray(words3));
                 }
               }
@@ -69,17 +77,15 @@ export const DictionaryBook = forwardRef(
       return array;
     }, [words]);
 
-    console.log(wordsArray);
-
     return (
       <DictionaryBookWrapper ref={ref}>
         <Flex style={{ height: '100%' }} gap={30}>
-          <DictionaryPage>{wordsArray}</DictionaryPage>
+          <DictionaryPage>{wordsArray.slice(0, wordsCount / 2)}</DictionaryPage>
           <Divider style={{ height: '100%' }}>
             <TopRectangle />
             <BottomRectangle />
           </Divider>
-          <DictionaryPage></DictionaryPage>
+          <DictionaryPage>{wordsArray.slice(wordsCount / 2)}</DictionaryPage>
         </Flex>
       </DictionaryBookWrapper>
     );
@@ -97,7 +103,7 @@ const DictionaryBookWrapper = styled.div`
 const DictionaryPage = styled.div`
   height: 100%;
   flex-grow: 0.45;
-  max-width: calc(50% - 30px);
+  width: calc(50% - 30px);
   padding: 10px 0;
 `;
 
@@ -105,15 +111,18 @@ const DictionaryTitle = styled.div<{ $level: 1 | 2 }>`
   height: 40px;
   display: flex;
   align-items: center;
+  font-weight: 500;
 
   ${({ $level }) =>
     $level === 1
       ? css`
           font-size: 28px;
+          color: rgba(255, 255, 255, 0.4);
         `
       : css`
           font-size: 22px;
           margin-left: 20px;
+          color: rgba(255, 255, 255, 0.6);
         `}
 `;
 

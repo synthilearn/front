@@ -66,10 +66,10 @@ export interface IWord {
   dictionaryId: string;
   text: string;
   type: TWord;
-  translations: ITranslation[] | null;
+  phraseTranslates: ITranslation[] | null;
 }
 
 export interface ITranslation {
   partOfSpeech: TPartsOfSpeech;
-  text: string;
+  translationText: string;
 }

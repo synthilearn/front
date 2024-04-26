@@ -23,8 +23,6 @@ export const DictionaryWidget = () => {
     state => state.dictionarySettings,
   );
 
-  console.log(dictionarySettings);
-
   const dictionaryId = useMemo(() => {
     return currentWorkarea?.widgets?.find(
       widget => widget.type === 'DICTIONARY',
@@ -85,6 +83,7 @@ export const DictionaryWidget = () => {
         </Button>
       </Flex>
       <DictionaryBook
+        wordsCount={wordsCount}
         groupsCount={2}
         words={wordsData?.data?.resultData}
         ref={bookRef}

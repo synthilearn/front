@@ -9,7 +9,7 @@ import {
   Switch,
 } from 'antd';
 import { TYPES_WORD_OPTIONS } from 'shared/const';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import styled from 'styled-components';
 import { useDictionaryState } from 'widgets/DictionaryWidget/state/useDictionaryState';
@@ -52,9 +52,15 @@ export const DictionarySettingsDrawer = ({
       setTimeout(() => {
         refetchWords();
         onClose();
-      }, 500);
+      }, 50);
     });
   };
+
+  useEffect(() => {
+    if (!open) {
+      form.resetFields();
+    }
+  }, [open]);
 
   return (
     <Drawer
