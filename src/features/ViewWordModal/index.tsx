@@ -1,10 +1,12 @@
 import {
+  Button,
   Dropdown,
   Flex,
   Form,
   Input,
   InputRef,
   MenuProps,
+  Modal,
   notification,
   Tag,
   Tooltip,
@@ -20,13 +22,13 @@ import {
 } from 'react';
 import { ETagColors } from 'shared/enums';
 import { PlusOutlined } from '@ant-design/icons';
-import Modal from 'shared/components/Modal';
 import { useMutation } from '@tanstack/react-query';
-import { ITranslation, IWord } from 'shared/interfaces';
+import { IBackendRes, ITranslation, IWord, IWorkarea } from 'shared/interfaces';
 import { $api } from 'shared/api';
 import { isSingleWordOrPhrase } from 'shared/helpers/isSingleWord';
 import styled from 'styled-components';
 import { TPartsOfSpeech } from 'shared/types';
+import { useQuery } from '@tanstack/react-query';
 
 const tagInputStyle: CSSProperties = {
   width: 140,
@@ -42,14 +44,14 @@ const tagPlusStyle: CSSProperties = {
 };
 
 interface IProps {
-  open: boolean;
+  wordId: string;
   onClose: () => void;
   dictionaryId: string;
   refetchWords: () => void;
 }
 
-const AddWordModal = ({
-  open,
+const ViewWordModal = ({
+  wordId,
   onClose,
   dictionaryId,
   refetchWords,
@@ -66,8 +68,8 @@ const AddWordModal = ({
   const editInputRef = useRef<InputRef>(null);
   const [submittable, setSubmittable] = useState<boolean>(false);
 
-  const { mutate: createWord, isPending: creatingWord } = useMutation({
-    mutationFn: (payload: Omit<IWord, 'id'>) => {
+  const { mutate: editWord, isPending: editingWord } = useMutation({
+    mutationFn: (payload: IWord) => {
       return $api.post<IWord>('dictionary-service/v1/phrase', payload);
     },
     onSuccess: async () => {
@@ -80,14 +82,40 @@ const AddWordModal = ({
     },
   });
 
-  const handleCreateWord = async () => {
-    const payload: Omit<IWord, 'id'> = {
+  const { mutate: deleteWord, isPending: deletingWord } = useMutation({
+    mutationFn: () => {
+      return $api.delete<IWord>(`dictionary-service/v1/phrase/${wordId}`);
+    },
+    onSuccess: async () => {
+      refetchWords();
+      notification.success({
+        message: undefined,
+        description: `Слово ${wordData.data.resultData.text} удалено!`,
+      });
+      refetchWords();
+      onClose();
+    },
+  });
+
+  const { data: wordData } = useQuery({
+    queryKey: ['word'],
+    enabled: !!wordId,
+    queryFn: () => {
+      return $api.get<IBackendRes<IWord>>(
+        `dictionary-service/v1/phrase/${wordId}`,
+      );
+    },
+  });
+
+  const handleEditWord = async () => {
+    const payload: IWord = {
       dictionaryId: dictionaryId,
+      id: wordId,
       text: values.text,
       type: isSingleWordOrPhrase(values.text) ? 'WORD' : 'PHRASE',
       phraseTranslates: tags,
     };
-    createWord(payload);
+    editWord(payload);
   };
 
   const handleClose = (removedTag: ITranslation) => {
@@ -155,16 +183,37 @@ const AddWordModal = ({
     }
   }, [open]);
 
+  useEffect(() => {
+    if (!!wordData?.data) {
+      setTags(
+        wordData.data.resultData.phraseTranslates.map(translate => translate),
+      );
+      form.setFieldValue('text', wordData.data.resultData.text);
+    }
+  }, [wordData?.data]);
+
   return (
     <Modal
+      centered
       width={600}
-      open={open}
-      onClose={onClose}
+      open={!!wordId}
+      onCancel={onClose}
       okText={'Создать'}
-      okLoading={creatingWord}
-      onOk={handleCreateWord}
-      okDisabled={!submittable}
-      title={'Создание слова'}
+      title={'Редактирование слова'}
+      footer={
+        <Flex style={{ marginTop: 30 }} justify={'space-between'}>
+          <Button loading={deletingWord} onClick={() => deleteWord()} danger>
+            Удалить
+          </Button>
+          <Button
+            loading={editingWord}
+            disabled={!submittable}
+            onClick={handleEditWord}
+          >
+            Сохранить
+          </Button>
+        </Flex>
+      }
     >
       <Form form={form} layout="vertical">
         <Form.Item
@@ -180,7 +229,7 @@ const AddWordModal = ({
           <Input placeholder={'word'} />
         </Form.Item>
         <Form.Item label={'Добавьте переводы'}>
-          <Flex style={{ marginTop: '10px' }} gap="12px 4px" wrap="wrap">
+          <Flex style={{ marginTop: '10px' }} gap="12px 6px" wrap="wrap">
             {tags.map<ReactNode>((tag, index) => {
               if (editInputIndex === index) {
                 return (
@@ -271,9 +320,10 @@ const AddWordModal = ({
   );
 };
 
-export default AddWordModal;
+export default ViewWordModal;
 
 const TagStyled = styled(Tag)`
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;

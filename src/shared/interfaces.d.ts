@@ -62,7 +62,7 @@ export interface ITemplate {
 }
 
 export interface IWord {
-  id: number;
+  id: string;
   dictionaryId: string;
   text: string;
   type: TWord;

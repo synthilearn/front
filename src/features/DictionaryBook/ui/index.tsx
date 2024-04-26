@@ -1,19 +1,42 @@
 import styled, { css } from 'styled-components';
-import { forwardRef, MutableRefObject, Ref, useMemo, useRef } from 'react';
+import {
+  forwardRef,
+  MutableRefObject,
+  Ref,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import DictionaryWord from 'features/DictionaryBook/ui/DictionaryWord';
 import { Flex } from 'antd';
 import { EWordTypes } from 'shared/enums';
 import { ITranslation, IWord } from 'shared/interfaces';
+import ViewWordModal from 'features/ViewWordModal';
+import { useCurrentWorkarea } from 'shared/states/useCurrentWorkarea';
 
 interface IProps {
   ref: Ref<HTMLDivElement>;
   words: any;
   groupsCount: number;
   wordsCount: number | undefined;
+  refetchWords: () => void;
 }
 
 export const DictionaryBook = forwardRef(
-  ({ words, groupsCount, wordsCount }: IProps, ref: Ref<HTMLDivElement>) => {
+  (
+    { words, groupsCount, wordsCount, refetchWords }: IProps,
+    ref: Ref<HTMLDivElement>,
+  ) => {
+    const [selectedWordId, setSelectedWordId] = useState<string>();
+
+    const currentWorkarea = useCurrentWorkarea(state => state.currentWorkarea);
+
+    const dictionaryId = useMemo(() => {
+      return currentWorkarea?.widgets?.find(
+        widget => widget.type === 'DICTIONARY',
+      )?.id;
+    }, [currentWorkarea]);
+
     const wordsArray = useMemo(() => {
       if (!words) {
         return [];
@@ -25,6 +48,8 @@ export const DictionaryBook = forwardRef(
           <DictionaryWord
             $leftMargin={groupsCount * 10}
             word={word.text}
+            wordId={word.id}
+            setWordId={setSelectedWordId}
             translations={word.phraseTranslates}
             key={
               word.id +
@@ -87,6 +112,12 @@ export const DictionaryBook = forwardRef(
           </Divider>
           <DictionaryPage>{wordsArray.slice(wordsCount / 2)}</DictionaryPage>
         </Flex>
+        <ViewWordModal
+          wordId={selectedWordId}
+          onClose={() => setSelectedWordId(undefined)}
+          dictionaryId={dictionaryId}
+          refetchWords={refetchWords}
+        />
       </DictionaryBookWrapper>
     );
   },

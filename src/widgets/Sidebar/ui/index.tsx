@@ -42,14 +42,14 @@ export const Sidebar = ({ changeOpenSider, siderIsOpen }: ISidebarProps) => {
   });
 
   const activeAreas = useMemo(() => {
-    if (workareasData?.data.resultData) {
-      return workareasData?.data.resultData.map((area: any) => ({
+    if (workareasData?.data?.resultData) {
+      return workareasData?.data?.resultData?.map((area: any) => ({
         label: area.name,
         clickLink: areaRoutes[area.name as any],
       }));
     }
     return [];
-  }, [workareasData]);
+  }, [workareasData?.data]);
 
   const goToMainPage = () => {
     navigate('/');
@@ -73,7 +73,7 @@ export const Sidebar = ({ changeOpenSider, siderIsOpen }: ISidebarProps) => {
       }
     }
     if (neededKey) {
-      const currentWorkareaId = workareasData?.data.resultData.find(
+      const currentWorkareaId = workareasData?.data?.resultData?.find(
         (area: IWorkarea) => area.name === neededKey,
       )?.id;
 

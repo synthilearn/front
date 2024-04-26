@@ -6,13 +6,25 @@ interface IProps {
   word: string;
   translations: ITranslation[] | null;
   $leftMargin: number;
+  wordId: string;
+  setWordId: (wordId: string) => void;
 }
-const DictionaryWord = ({ word, translations, $leftMargin }: IProps) => {
+const DictionaryWord = ({
+  word,
+  translations,
+  $leftMargin,
+  setWordId,
+  wordId,
+}: IProps) => {
+  const handleClick = () => {
+    setWordId(wordId);
+  };
   return (
     <DictionaryWordWrapper
       style={{ marginLeft: $leftMargin }}
       align={'center'}
       gap={5}
+      onClick={handleClick}
     >
       <Word>{`${word} ${!!translations ? '-' : ''}`}</Word>
       {translations && (
@@ -51,7 +63,7 @@ const Word = styled.span`
 
 const Translations = styled.span`
   max-width: 350px;
-  white-space: nowrap; /* Запрет переноса строки */
-  overflow: hidden; /* Скрытие текста, который не помещается */
-  text-overflow: ellipsis; /* Добавление троеточия в конце длинной строки */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 `;

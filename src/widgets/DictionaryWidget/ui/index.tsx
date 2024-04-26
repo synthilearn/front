@@ -83,6 +83,7 @@ export const DictionaryWidget = () => {
         </Button>
       </Flex>
       <DictionaryBook
+        refetchWords={refetchWords}
         wordsCount={wordsCount}
         groupsCount={2}
         words={wordsData?.data?.resultData}
