@@ -47,7 +47,13 @@ export const DictionarySettingsDrawer = ({
 
   const handleSave = () => {
     form.validateFields().then(values => {
-      setDictionarySettings(values);
+      const [dateFrom, dateTo] = values.dates;
+      delete values.dates;
+      setDictionarySettings({
+        ...values,
+        dateFrom: dayjs(dateFrom).format(dateFormat),
+        dateTo: dayjs(dateTo).format(dateFormat),
+      });
 
       setTimeout(() => {
         refetchWords();
@@ -75,7 +81,17 @@ export const DictionarySettingsDrawer = ({
         </FooterWrapper>
       }
     >
-      <Form form={form} layout="vertical" initialValues={dictionarySettings}>
+      <Form
+        form={form}
+        layout="vertical"
+        initialValues={{
+          ...dictionarySettings,
+          dates: [
+            dayjs(dictionarySettings?.dateFrom, dateFormat),
+            dayjs(dictionarySettings?.dateTo, dateFormat),
+          ],
+        }}
+      >
         <Flex vertical>
           <TitleStyled>Показывать переводы</TitleStyled>
           <Form.Item valuePropName={'checked'} name={'showTranslation'}>
@@ -118,14 +134,8 @@ export const DictionarySettingsDrawer = ({
           >
             <Select {...sharedProps} />
           </Form.Item>
-          <Form.Item label={'Дате добавления слов'}>
-            <RangePicker
-              defaultValue={[
-                dayjs('2024-04-23', dateFormat),
-                dayjs('2024-04-26', dateFormat),
-              ]}
-              format={dateFormat}
-            />
+          <Form.Item label={'Дате добавления слов'} name={'dates'}>
+            <RangePicker format={dateFormat} />
           </Form.Item>
 
           <TitleStyled>Группировать по</TitleStyled>

@@ -8,7 +8,7 @@ import {
   useState,
 } from 'react';
 import DictionaryWord from 'features/DictionaryBook/ui/DictionaryWord';
-import { Flex } from 'antd';
+import { Flex, Skeleton } from 'antd';
 import { EWordTypes } from 'shared/enums';
 import { ITranslation, IWord } from 'shared/interfaces';
 import ViewWordModal from 'features/ViewWordModal';
@@ -20,11 +20,12 @@ interface IProps {
   groupsCount: number;
   wordsCount: number | undefined;
   refetchWords: () => void;
+  loadingWords: boolean;
 }
 
 export const DictionaryBook = forwardRef(
   (
-    { words, groupsCount, wordsCount, refetchWords }: IProps,
+    { words, groupsCount, wordsCount, refetchWords, loadingWords }: IProps,
     ref: Ref<HTMLDivElement>,
   ) => {
     const [selectedWordId, setSelectedWordId] = useState<string>();
@@ -105,12 +106,24 @@ export const DictionaryBook = forwardRef(
     return (
       <DictionaryBookWrapper ref={ref}>
         <Flex style={{ height: '100%' }} gap={30}>
-          <DictionaryPage>{wordsArray.slice(0, wordsCount / 2)}</DictionaryPage>
+          <DictionaryPage>
+            {loadingWords ? (
+              <Skeleton paragraph={{ rows: 6 }} />
+            ) : (
+              wordsArray.slice(0, wordsCount / 2)
+            )}
+          </DictionaryPage>
           <Divider style={{ height: '100%' }}>
             <TopRectangle />
             <BottomRectangle />
           </Divider>
-          <DictionaryPage>{wordsArray.slice(wordsCount / 2)}</DictionaryPage>
+          <DictionaryPage>
+            {loadingWords ? (
+              <Skeleton paragraph={{ rows: 6 }} />
+            ) : (
+              wordsArray.slice(wordsCount / 2)
+            )}
+          </DictionaryPage>
         </Flex>
         <ViewWordModal
           wordId={selectedWordId}

@@ -9,6 +9,7 @@ import { useQuery } from '@tanstack/react-query';
 import { $api } from 'shared/api';
 import { IBackendRes, IUserData } from 'shared/interfaces';
 import { useDictionaryState } from 'widgets/DictionaryWidget/state/useDictionaryState';
+import SearchWordAutocomplete from 'features/SearchWordAutocomplete';
 
 export const DictionaryWidget = () => {
   const bookRef = useRef<null | HTMLDivElement>(null);
@@ -70,10 +71,7 @@ export const DictionaryWidget = () => {
     <DictionaryWrapper vertical gap={15}>
       <Flex justify={'space-between'}>
         <Flex gap={12}>
-          <AutoComplete
-            placeholder={'Поиск слова'}
-            style={{ width: '300px' }}
-          />
+          <SearchWordAutocomplete refetchWords={refetchWords} />
           <Button onClick={() => setOpenSettingsDrawer(true)}>
             Настроить словарь
           </Button>
@@ -88,6 +86,7 @@ export const DictionaryWidget = () => {
         groupsCount={2}
         words={wordsData?.data?.resultData}
         ref={bookRef}
+        loadingWords={isFetching}
       />
       <Flex justify={'flex-end'}>
         <Pagination defaultCurrent={1} total={50} />
