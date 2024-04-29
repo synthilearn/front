@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { useMemo, useState } from 'react';
 import EnterEmailStep from 'widgets/RegisterStepsModal/ui/EnterEmailStep';
-import { Form, StepProps, Steps } from 'antd';
+import { Button, Divider, Flex, Form, StepProps, Steps } from 'antd';
 import {
   CodeOutlined,
   LoadingOutlined,
@@ -33,6 +33,10 @@ export const RegisterStepsModal = () => {
   const sendEmail = useRegisterStepStore(state => state.sendEmail);
   const sendUserData = useRegisterStepStore(state => state.sendUserData);
   const sendCode = useRegisterStepStore(state => state.sendCode);
+
+  const redirectToLogin = () => {
+    navigate('/login');
+  };
 
   const modalSteps = useMemo(
     () => [
@@ -103,6 +107,14 @@ export const RegisterStepsModal = () => {
         <AuthBtn handleClick={handleClickContinue} isLoading={isLoading}>
           {step > 1 ? 'Отправить' : 'Далее'}
         </AuthBtn>
+        {step === 0 && (
+          <Flex style={{ width: '100%' }} vertical gap={15} justify={'center'}>
+            <DividerStyled plain>Есть аккаунт ?</DividerStyled>
+            <LoginBtn onClick={redirectToLogin} size={'large'} type="link">
+              Войти
+            </LoginBtn>
+          </Flex>
+        )}
       </StepModal>
     </AuthFormContainer>
   );
@@ -120,4 +132,13 @@ const Title = styled.div`
   font-weight: 500;
   font-size: 24px;
   margin-bottom: 15px;
+`;
+
+const DividerStyled = styled(Divider)`
+  margin: 0 !important;
+`;
+
+const LoginBtn = styled(Button)`
+  padding: 0 15px !important;
+  height: min-content !important;
 `;
