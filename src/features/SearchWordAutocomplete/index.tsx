@@ -92,7 +92,7 @@ const SearchWordAutocomplete = ({ refetchWords }: IProps) => {
                   <Flex vertical>
                     {getTranslationElement(word.text, true)}
                     <TranslationsBlock>
-                      {word.phraseTranslates.map(translate =>
+                      {word.phraseTranslates?.map(translate =>
                         getTranslationElement(translate.translationText),
                       )}
                     </TranslationsBlock>

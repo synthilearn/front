@@ -54,7 +54,7 @@ export const DictionaryBook = forwardRef(
             translations={word.phraseTranslates}
             key={
               word.id +
-              word.phraseTranslates.map(
+              word.phraseTranslates?.map(
                 (translation: ITranslation) => translation.translationText,
               )
             }
