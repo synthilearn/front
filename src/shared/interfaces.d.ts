@@ -73,3 +73,8 @@ export interface ITranslation {
   partOfSpeech: TPartsOfSpeech;
   translationText: string;
 }
+
+export interface IWordsData {
+  totalPages: number;
+  phrases: any;
+}

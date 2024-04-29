@@ -7,12 +7,13 @@ import { useCurrentWorkarea } from 'shared/states/useCurrentWorkarea';
 import { DictionarySettingsDrawer } from 'features/DictionarySettingsDrawer';
 import { useQuery } from '@tanstack/react-query';
 import { $api } from 'shared/api';
-import { IBackendRes, IUserData } from 'shared/interfaces';
+import { IBackendRes, IUserData, IWordsData } from 'shared/interfaces';
 import { useDictionaryState } from 'widgets/DictionaryWidget/state/useDictionaryState';
 import SearchWordAutocomplete from 'features/SearchWordAutocomplete';
 
 export const DictionaryWidget = () => {
   const [page, setPage] = useState<number>(0);
+  const [lastPage, setLastPage] = useState(1);
   const bookRef = useRef<null | HTMLDivElement>(null);
   const [wordsCount, setWordsCount] = useState<number>();
   const [openAddWordModal, setOpenAddWordModal] = useState(false);
@@ -39,18 +40,43 @@ export const DictionaryWidget = () => {
     queryKey: ['words', page],
     enabled: !!dictionaryId && !!wordsCount && !!dictionarySettings,
     queryFn: () => {
-      return $api.post<IBackendRes<any>>('dictionary-service/v1/phrase/all', {
-        dictionaryId,
-        page: 0,
-        size: wordsCount,
-        ...dictionarySettings,
-      });
+      return $api.post<IBackendRes<IWordsData>>(
+        'dictionary-service/v1/phrase/all',
+        {
+          dictionaryId,
+          page,
+          size: wordsCount,
+          ...dictionarySettings,
+        },
+      );
+    },
+  });
+
+  const { data: _ } = useQuery({
+    queryKey: ['words', wordsData?.data],
+    enabled: !!wordsData?.data && !!lastPage,
+    queryFn: () => {
+      return $api.post<IBackendRes<IWordsData>>(
+        'dictionary-service/v1/phrase/all',
+        {
+          dictionaryId,
+          page: lastPage - 1,
+          size: wordsCount,
+          ...dictionarySettings,
+        },
+      );
     },
   });
 
   const changePage = (page: number) => {
-    setPage(page);
+    setPage(page - 1);
   };
+
+  useEffect(() => {
+    if (!_?.data?.resultData?.phrases) {
+      setLastPage(prev => prev - 1);
+    }
+  }, [_]);
 
   useEffect(() => {
     if (dictionaryId) {
@@ -72,6 +98,12 @@ export const DictionaryWidget = () => {
     }
   }, [bookRef]);
 
+  useEffect(() => {
+    if (wordsData?.data) {
+      setLastPage(wordsData?.data?.resultData?.totalPages);
+    }
+  }, [wordsData?.data]);
+
   return (
     <DictionaryWrapper vertical gap={15}>
       <Flex justify={'space-between'}>
@@ -89,16 +121,17 @@ export const DictionaryWidget = () => {
         refetchWords={refetchWords}
         wordsCount={wordsCount}
         groupsCount={2}
-        words={wordsData?.data?.resultData}
+        words={wordsData?.data?.resultData?.phrases}
         ref={bookRef}
         loadingWords={isFetching}
       />
       <Flex justify={'flex-end'}>
         <Pagination
-          current={page}
+          current={page + 1}
+          total={wordsCount * lastPage}
           pageSize={wordsCount}
-          total={50}
           onChange={changePage}
+          showSizeChanger={false}
         />
       </Flex>
       <AddWordModal

@@ -71,24 +71,28 @@ export const DictionaryBook = forwardRef(
         for (const key in words) {
           if (words.hasOwnProperty(key)) {
             const words2 = words[key];
-            array.push(
-              <DictionaryTitle $level={1} key={key + String(Math.random())}>
-                {getTitle(key)}
-              </DictionaryTitle>,
-            );
+            if (!Array.isArray(words2) || words2.length) {
+              array.push(
+                <DictionaryTitle $level={1} key={key + String(Math.random())}>
+                  {getTitle(key)}
+                </DictionaryTitle>,
+              );
+            }
 
             if (!Array.isArray(words2)) {
               for (const key2 in words2) {
                 if (words2.hasOwnProperty(key2)) {
                   const words3 = words2[key2];
-                  array.push(
-                    <DictionaryTitle
-                      $level={2}
-                      key={key2 + String(Math.random())}
-                    >
-                      {getTitle(key2)}
-                    </DictionaryTitle>,
-                  );
+                  if (!Array.isArray(words3) || words3.length) {
+                    array.push(
+                      <DictionaryTitle
+                        $level={2}
+                        key={key2 + String(Math.random())}
+                      >
+                        {getTitle(key2)}
+                      </DictionaryTitle>,
+                    );
+                  }
                   array.push(...getWordsArray(words3));
                 }
               }
