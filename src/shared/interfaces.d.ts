@@ -56,7 +56,7 @@ export interface ITemplate {
   type: string;
   name: string;
   status: TTemplateStatus;
-  available: null;
+  available: null | 'USED';
   description: string;
   isFake: boolean;
 }

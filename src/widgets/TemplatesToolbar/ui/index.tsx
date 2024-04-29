@@ -114,9 +114,10 @@ export const TemplatesToolbar = () => {
       ></CollapseButton>
 
       <Modal
-          okButtonProps={{
-            type: 'default'
-          }}
+        okButtonProps={{
+          type: 'default',
+          disabled: creatingTemplate?.available === 'USED',
+        }}
         open={!!creatingTemplate}
         onCancel={() => setCreatingTemplate(undefined)}
         title={'Создание рабочей области'}
@@ -134,6 +135,9 @@ export const TemplatesToolbar = () => {
             <Text strong>Описание:</Text>
             <Text>{creatingTemplate?.description}</Text>
           </Flex>
+          <Typography.Text type={'danger'}>
+            Вы уже создали данную рабочую область
+          </Typography.Text>
         </Flex>
       </Modal>
     </ToolbarWrapper>

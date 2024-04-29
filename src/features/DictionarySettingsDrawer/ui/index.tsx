@@ -47,13 +47,24 @@ export const DictionarySettingsDrawer = ({
 
   const handleSave = () => {
     form.validateFields().then(values => {
-      const [dateFrom, dateTo] = values.dates;
+      const dates = values.dates;
       delete values.dates;
-      setDictionarySettings({
+
+      const payload: any = {
         ...values,
-        dateFrom: dayjs(dateFrom).format(dateFormat),
-        dateTo: dayjs(dateTo).format(dateFormat),
-      });
+      };
+
+      if (dates) {
+        const [dateFrom, dateTo] = dates;
+        if (dateFrom) {
+          payload.dateFrom = dayjs(dateFrom).format(dateFormat);
+        }
+        if (dateTo) {
+          payload.dateTo = dayjs(dateTo).format(dateFormat);
+        }
+      }
+
+      setDictionarySettings(payload);
 
       setTimeout(() => {
         refetchWords();
@@ -87,8 +98,12 @@ export const DictionarySettingsDrawer = ({
         initialValues={{
           ...dictionarySettings,
           dates: [
-            dayjs(dictionarySettings?.dateFrom, dateFormat),
-            dayjs(dictionarySettings?.dateTo, dateFormat),
+            dictionarySettings?.dateFrom
+              ? dayjs(dictionarySettings?.dateFrom, dateFormat)
+              : null,
+            dictionarySettings?.dateTo
+              ? dayjs(dictionarySettings?.dateTo, dateFormat)
+              : null,
           ],
         }}
       >
