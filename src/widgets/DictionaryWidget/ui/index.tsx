@@ -13,7 +13,7 @@ import SearchWordAutocomplete from 'features/SearchWordAutocomplete';
 
 export const DictionaryWidget = () => {
   const [page, setPage] = useState<number>(0);
-  const [lastPage, setLastPage] = useState(1);
+  const [lastPage, setLastPage] = useState(0);
   const bookRef = useRef<null | HTMLDivElement>(null);
   const [wordsCount, setWordsCount] = useState<number>();
   const [openAddWordModal, setOpenAddWordModal] = useState(false);
@@ -54,13 +54,13 @@ export const DictionaryWidget = () => {
 
   const { data: _ } = useQuery({
     queryKey: ['words', wordsData?.data],
-    enabled: !!wordsData?.data && !!lastPage,
+    enabled: !!wordsData?.data?.resultData?.totalPages,
     queryFn: () => {
       return $api.post<IBackendRes<IWordsData>>(
         'dictionary-service/v1/phrase/all',
         {
           dictionaryId,
-          page: lastPage - 1,
+          page: wordsData?.data?.resultData?.totalPages - 1,
           size: wordsCount,
           ...dictionarySettings,
         },
@@ -73,10 +73,10 @@ export const DictionaryWidget = () => {
   };
 
   useEffect(() => {
-    if (!_?.data?.resultData?.phrases) {
+    if (_?.data?.resultData && !_?.data?.resultData?.phrases) {
       setLastPage(prev => prev - 1);
     }
-  }, [_]);
+  }, [_?.data?.resultData]);
 
   useEffect(() => {
     if (dictionaryId) {
