@@ -135,9 +135,11 @@ export const TemplatesToolbar = () => {
             <Text strong>Описание:</Text>
             <Text>{creatingTemplate?.description}</Text>
           </Flex>
-          <Typography.Text type={'danger'}>
-            Вы уже создали данную рабочую область
-          </Typography.Text>
+          {creatingTemplate?.available === 'USED' && (
+            <Typography.Text type={'danger'}>
+              Вы уже создали данную рабочую область
+            </Typography.Text>
+          )}
         </Flex>
       </Modal>
     </ToolbarWrapper>

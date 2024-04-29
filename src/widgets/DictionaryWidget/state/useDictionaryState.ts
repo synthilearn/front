@@ -9,8 +9,8 @@ type TDictionarySettings = {
   showTranslation: boolean;
   partsOfSpeech: TPartsOfSpeech[];
   phraseTypes: TWord[];
-  dateFrom: string;
-  dateTo: string;
+  dateFrom?: string;
+  dateTo?: string;
   groups: ('PART_OF_SPEECH' | 'LETTER')[];
 };
 
@@ -34,7 +34,13 @@ export const useDictionaryState = create<TDictionaryState>()(
         const res = await $api.get<IBackendRes<any>>(
           `dictionary-service/v1/dictionary-parameters/${dictionaryId}`,
         );
-        set({ dictionarySettings: res.data.resultData });
+
+        let { dateFrom, dateTo } = res.data.resultData;
+        dateFrom = dateFrom === null ? undefined : dateFrom;
+        dateTo = dateTo === null ? undefined : dateTo;
+        set({
+          dictionarySettings: { ...res.data.resultData, dateFrom, dateTo },
+        });
       },
     }),
     {
