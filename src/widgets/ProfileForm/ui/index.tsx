@@ -23,7 +23,7 @@ export const ProfileForm = () => {
     isFetching,
     refetch,
   } = useQuery({
-    queryKey: [],
+    queryKey: ['userData'],
     queryFn: () => {
       return $api.get<IBackendRes<IUserData>>('customer-service/v1/customer');
     },

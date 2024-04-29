@@ -12,6 +12,7 @@ import { useDictionaryState } from 'widgets/DictionaryWidget/state/useDictionary
 import SearchWordAutocomplete from 'features/SearchWordAutocomplete';
 
 export const DictionaryWidget = () => {
+  const [page, setPage] = useState<number>(0);
   const bookRef = useRef<null | HTMLDivElement>(null);
   const [wordsCount, setWordsCount] = useState<number>();
   const [openAddWordModal, setOpenAddWordModal] = useState(false);
@@ -35,7 +36,7 @@ export const DictionaryWidget = () => {
     isFetching,
     refetch: refetchWords,
   } = useQuery({
-    queryKey: ['words'],
+    queryKey: ['words', page],
     enabled: !!dictionaryId && !!wordsCount && !!dictionarySettings,
     queryFn: () => {
       return $api.post<IBackendRes<any>>('dictionary-service/v1/phrase/all', {
@@ -46,6 +47,10 @@ export const DictionaryWidget = () => {
       });
     },
   });
+
+  const changePage = (page: number) => {
+    setPage(page);
+  };
 
   useEffect(() => {
     if (dictionaryId) {
@@ -89,7 +94,12 @@ export const DictionaryWidget = () => {
         loadingWords={isFetching}
       />
       <Flex justify={'flex-end'}>
-        <Pagination defaultCurrent={1} total={50} />
+        <Pagination
+          current={page}
+          pageSize={wordsCount}
+          total={50}
+          onChange={changePage}
+        />
       </Flex>
       <AddWordModal
         refetchWords={refetchWords}
