@@ -76,7 +76,7 @@ const ViewWordModal = ({
       refetchWords();
       notification.success({
         message: undefined,
-        description: 'Слово добавлено!',
+        description: 'Слово отредактировано!',
       });
       onClose();
     },

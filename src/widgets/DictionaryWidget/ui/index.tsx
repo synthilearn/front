@@ -10,6 +10,7 @@ import { $api } from 'shared/api';
 import { IBackendRes, IUserData, IWordsData } from 'shared/interfaces';
 import { useDictionaryState } from 'widgets/DictionaryWidget/state/useDictionaryState';
 import SearchWordAutocomplete from 'features/SearchWordAutocomplete';
+import TemplatesModal from 'features/TemplatesModal';
 
 export const DictionaryWidget = () => {
   const [page, setPage] = useState<number>(0);
@@ -17,6 +18,7 @@ export const DictionaryWidget = () => {
   const bookRef = useRef<null | HTMLDivElement>(null);
   const [wordsCount, setWordsCount] = useState<number>();
   const [openAddWordModal, setOpenAddWordModal] = useState(false);
+  const [openTemplatesModal, setOpenTemplatesModal] = useState(false);
   const [openSettingsDrawer, setOpenSettingsDrawer] = useState(false);
   const currentWorkarea = useCurrentWorkarea(state => state.currentWorkarea);
   const getDictionarySettings = useDictionaryState(
@@ -54,7 +56,7 @@ export const DictionaryWidget = () => {
 
   const { data: _ } = useQuery({
     queryKey: ['words', wordsData?.data],
-    enabled: !!wordsData?.data?.resultData?.totalPages,
+    enabled: !!wordsData?.data?.resultData?.totalPages && !!wordsCount,
     queryFn: () => {
       return $api.post<IBackendRes<IWordsData>>(
         'dictionary-service/v1/phrase/all',
@@ -67,6 +69,10 @@ export const DictionaryWidget = () => {
       );
     },
   });
+
+  const onCloseTemplatesModal = () => {
+    setOpenTemplatesModal(false);
+  };
 
   const changePage = (page: number) => {
     setPage(page - 1);
@@ -113,9 +119,12 @@ export const DictionaryWidget = () => {
             Настроить словарь
           </Button>
         </Flex>
-        <Button onClick={() => setOpenAddWordModal(true)}>
-          Добавить слово
-        </Button>
+        <Flex gap={15}>
+          <Button onClick={() => setOpenTemplatesModal(true)}>Шаблоны</Button>
+          <Button onClick={() => setOpenAddWordModal(true)}>
+            Добавить слово
+          </Button>
+        </Flex>
       </Flex>
       <DictionaryBook
         refetchWords={refetchWords}
@@ -139,6 +148,11 @@ export const DictionaryWidget = () => {
         dictionaryId={dictionaryId}
         open={openAddWordModal}
         onClose={() => setOpenAddWordModal(false)}
+      />
+      <TemplatesModal
+        refetchWords={refetchWords}
+        open={openTemplatesModal}
+        onClose={onCloseTemplatesModal}
       />
       <DictionarySettingsDrawer
         refetchWords={refetchWords}

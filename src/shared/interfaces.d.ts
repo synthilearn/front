@@ -78,3 +78,11 @@ export interface IWordsData {
   totalPages: number;
   phrases: any;
 }
+
+export interface IWordTemplate {
+  id: string;
+  amountWords: number;
+  creationDate: string;
+  file: string;
+  name: string;
+}
