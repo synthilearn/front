@@ -18,7 +18,7 @@ interface ISidebarProps {
 }
 
 const areaRoutes: any = {
-  'Изучение языков': '/active-area/learn-language',
+  'Изучение английского': '/active-area/learn-language',
 };
 
 const deactiveAreas: IAreaItem[] = [];

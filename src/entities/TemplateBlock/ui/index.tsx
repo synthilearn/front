@@ -47,7 +47,7 @@ const TemplateWrapper = styled.div<{
   $transitionDelay: number;
   $isFake: boolean;
 }>`
-  width: 200px;
+  width: 220px;
   height: 88px;
   position: relative;
   padding: 24px;

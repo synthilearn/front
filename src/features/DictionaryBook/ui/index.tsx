@@ -111,26 +111,22 @@ export const DictionaryBook = forwardRef(
       <DictionaryBookWrapper ref={ref}>
         <Flex style={{ height: '100%' }} gap={30}>
           <DictionaryPage>
-            <DictionaryPageInner>
-              {loadingWords ? (
-                <Skeleton paragraph={{ rows: 6 }} />
-              ) : (
-                wordsArray.slice(0, wordsCount / 2)
-              )}
-            </DictionaryPageInner>
+            {loadingWords ? (
+              <Skeleton paragraph={{ rows: 6 }} />
+            ) : (
+              wordsArray.slice(0, wordsCount / 2)
+            )}
           </DictionaryPage>
           <Divider style={{ height: '100%' }}>
             <TopRectangle />
             <BottomRectangle />
           </Divider>
           <DictionaryPage>
-            <DictionaryPageInner>
-              {loadingWords ? (
-                <Skeleton paragraph={{ rows: 6 }} />
-              ) : (
-                wordsArray.slice(wordsCount / 2)
-              )}
-            </DictionaryPageInner>
+            {loadingWords ? (
+              <Skeleton paragraph={{ rows: 6 }} />
+            ) : (
+              wordsArray.slice(wordsCount / 2)
+            )}
           </DictionaryPage>
         </Flex>
         <ViewWordModal
@@ -158,8 +154,8 @@ const DictionaryPage = styled.div`
   flex-grow: 0.45;
   width: calc(50% - 30px);
   padding: 10px 0;
-  display: flex;
-  justify-content: center;
+  //display: flex;
+  //justify-content: center;
 `;
 
 const DictionaryPageInner = styled.div`

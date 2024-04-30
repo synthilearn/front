@@ -181,7 +181,7 @@ const CollapseButton = styled(Button)<{ $isRotate: boolean }>`
 
 const SkeletonButton = styled(Skeleton.Button)`
   span {
-    width: 200px !important;
+    width: 220px !important;
     height: 88px !important;
     border-radius: 10px !important;
   }
