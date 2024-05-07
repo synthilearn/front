@@ -86,3 +86,31 @@ export interface IWordTemplate {
   file: string;
   name: string;
 }
+
+export interface IGameParameters {
+  dictionaryId: string;
+  partsOfSpeech: TPartsOfSpeech[];
+  phraseTypes: TWord[];
+  translatesAmount: number;
+  typeOfGame: 'DEFAULT';
+  timeOnWord: number;
+}
+
+export interface IGameData {
+  id: string;
+  creationDate: string;
+  result: null | any;
+  statisticCreated: boolean;
+  status: 'IN_PROGRESS' | 'FINISHED';
+}
+
+export interface IGame {
+  currentPhrase: string | null;
+  currentStage: number | null;
+  allStages: number | null;
+  stageEndTime: string | null;
+  gameStartedTime: string | null;
+  answerOptions: string[];
+  isStarted: boolean | null;
+  isFinished: boolean | null;
+}

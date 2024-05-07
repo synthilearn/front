@@ -5,9 +5,10 @@ import { COLOR_PRIMARY } from 'shared/const';
 interface IAreaSegmented {
   options: string[];
   onChange: (value: string) => void;
+  value: string;
 }
 
-const AreaSegmented = ({ options, onChange }: IAreaSegmented) => {
+const AreaSegmented = ({ options, onChange, value }: IAreaSegmented) => {
   return (
     <ConfigProvider
       theme={{
@@ -19,7 +20,12 @@ const AreaSegmented = ({ options, onChange }: IAreaSegmented) => {
         },
       }}
     >
-      <SegmentedStyled onChange={onChange} options={options} block />
+      <SegmentedStyled
+        value={value}
+        onChange={onChange}
+        options={options}
+        block
+      />
     </ConfigProvider>
   );
 };

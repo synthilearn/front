@@ -26,7 +26,7 @@ const sharedProps: SelectProps = {
   mode: 'multiple',
   style: { width: '100%' },
   options: TYPES_WORD_OPTIONS,
-  placeholder: 'Выберите типы слов',
+  placeholder: 'Выберите части речи',
   maxTagCount: 'responsive',
 };
 

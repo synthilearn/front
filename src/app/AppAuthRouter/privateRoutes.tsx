@@ -13,9 +13,5 @@ export const privateRoutes: IRoute[] = [
     path: '/profile',
     element: <ProfilePage />,
   },
-  {
-    path: '/active-area/learn-language',
-    element: <LearnLanguagePage />,
-  },
   { path: '*', element: <Navigate to="/" replace={true} /> },
 ];
