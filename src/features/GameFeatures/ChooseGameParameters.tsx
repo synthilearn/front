@@ -59,7 +59,7 @@ const ChooseGameParameters = ({ goToGame }: IProps) => {
     },
     onSuccess: async () => {
       console.log('starting', new Date(), new Date().getMilliseconds());
-      setTimer(11);
+      setTimer(6);
       timerIntervalId.current = setInterval(() => {
         setTimer(prev => prev - 1);
       }, 1000);

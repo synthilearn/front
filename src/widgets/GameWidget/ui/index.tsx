@@ -1,13 +1,27 @@
 import styled from 'styled-components';
-import { SelectProps } from 'antd';
+import { notification, SelectProps } from 'antd';
 import { TYPES_WORD_OPTIONS } from 'shared/const';
 import { useMemo, useState } from 'react';
 import ChooseGameParameters from 'features/GameFeatures/ChooseGameParameters';
 import PlayingGame from 'features/GameFeatures/PlayingGame';
 import { useQuery } from '@tanstack/react-query';
 import { $api } from 'shared/api';
-import { IBackendRes, IGame, ITranslation } from 'shared/interfaces';
+import {
+  IBackendRes,
+  IWordGame,
+  ITranslation,
+  IWord,
+  IAnswerQuestion,
+} from 'shared/interfaces';
 import { useCurrentWorkarea } from 'shared/states/useCurrentWorkarea';
+import { useMutation } from '@tanstack/react-query';
+
+interface IQuestionAnswer {
+  translate: string;
+  stage: number;
+  gameId: string;
+  workareaId: string;
+}
 
 const sharedProps: SelectProps = {
   mode: 'multiple',
@@ -19,15 +33,18 @@ const sharedProps: SelectProps = {
 
 export const GameWidget = () => {
   const [gameStep, setGameStep] = useState<0 | 1 | 2>(0);
-  const [currentWord, setCurrentWord] = useState<number>(1);
+  const [selectedWord, setSelectedWord] = useState<string>();
+  const [rightWord, setRightWord] = useState<string>();
 
   const currentWorkarea = useCurrentWorkarea(state => state.currentWorkarea);
 
-  const { data: currentGame } = useQuery({
+  const { data: currentWordGame, refetch: wordRefetch } = useQuery({
     queryKey: ['playingGame'],
     enabled: gameStep === 1,
     queryFn: () => {
-      return $api.get<IBackendRes<IGame>>('game-service/v1/game', {
+      setSelectedWord(undefined);
+      setRightWord(undefined);
+      return $api.get<IBackendRes<IWordGame>>('game-service/v1/game', {
         params: {
           workarea_id: currentWorkarea?.id,
         },
@@ -35,22 +52,54 @@ export const GameWidget = () => {
     },
   });
 
+  const { mutate: answerQuestion, isPending: editingWord } = useMutation({
+    mutationFn: (translate: string) => {
+      setSelectedWord(translate);
+
+      return $api.post<IBackendRes<IAnswerQuestion>>(
+        'game-service/v1/game/answer',
+        {
+          translate,
+          stage: currentWordGame?.data?.resultData?.currentStage,
+          gameId: currentWordGame?.data?.resultData?.gameId,
+          workareaId: currentWorkarea?.id,
+        },
+      );
+    },
+    onSuccess: async res => {
+      setRightWord(res.data.resultData.rightTranslate);
+    },
+  });
+
   const goToGame = () => {
-    // тут какой-то запрос на слово должен быть
     console.log(new Date(), new Date().getMilliseconds());
     setGameStep(1);
   };
 
-  const setNextWord = () => {
-    setCurrentWord(prev => prev + 1);
+  const setNextWord = async () => {
+    await wordRefetch();
+  };
+
+  const handleAnswerQuestion = async (translate: string) => {
+    await answerQuestion(translate);
+
+    setTimeout(() => {
+      wordRefetch();
+    }, 2000);
   };
 
   const gamePages = useMemo(() => {
     return [
       <ChooseGameParameters goToGame={goToGame} />,
-      <PlayingGame currentGame={currentGame?.data?.resultData} />,
+      <PlayingGame
+        currentWordGame={currentWordGame?.data?.resultData}
+        nextWord={setNextWord}
+        answerQuestion={handleAnswerQuestion}
+        selectedWord={selectedWord}
+        rightWord={rightWord}
+      />,
     ];
-  }, [currentGame?.data]);
+  }, [currentWordGame?.data, selectedWord, rightWord]);
 
   return <WidgetWrapper>{gamePages[gameStep]}</WidgetWrapper>;
 };

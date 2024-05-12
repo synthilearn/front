@@ -104,13 +104,18 @@ export interface IGameData {
   status: 'IN_PROGRESS' | 'FINISHED';
 }
 
-export interface IGame {
+export interface IWordGame {
   currentPhrase: string | null;
   currentStage: number | null;
   allStages: number | null;
   stageEndTime: string | null;
   gameStartedTime: string | null;
   answerOptions: string[];
-  isStarted: boolean | null;
-  isFinished: boolean | null;
+  state: 'IN_PROGRESS' | 'FINISHED';
+  gameId: string;
+}
+
+export interface IAnswerQuestion {
+  isCorrect: boolean;
+  rightTranslate: string;
 }
