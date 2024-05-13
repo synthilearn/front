@@ -118,6 +118,12 @@ const ChooseGameParameters = ({ goToGame }: IProps) => {
     }
   }, [timer]);
 
+  useEffect(() => {
+    if (gameParameters?.data?.code !== 1000) {
+      form.setFieldsValue(gameParameters?.data?.resultData);
+    }
+  }, [gameParameters?.data?.resultData]);
+
   return (
     <ConfigProvider
       theme={{
@@ -129,112 +135,110 @@ const ChooseGameParameters = ({ goToGame }: IProps) => {
         },
       }}
     >
-      {gameParameters?.data?.resultData && (
-        <Flex align={'center'} gap={20} vertical>
-          <Typography.Title level={3}>
-            Проверь свой уровень знаний слов в игре!
-          </Typography.Title>
-          <FormStyled
-            initialValues={gameParameters?.data?.resultData}
-            form={form}
-            layout="vertical"
+      <Flex align={'center'} gap={20} vertical>
+        <Typography.Title level={3}>
+          Проверь свой уровень знаний слов в игре!
+        </Typography.Title>
+        <FormStyled
+          disabled={!gameParameters?.data}
+          form={form}
+          layout="vertical"
+        >
+          <FormItem
+            label={'Части речи'}
+            name={'partsOfSpeech'}
+            rules={[
+              {
+                required: true,
+                message: 'Выберите хотя бы одну часть речи',
+              },
+            ]}
           >
+            <Select {...sharedProps} />
+          </FormItem>
+          <FormItem
+            label={'Типы слов'}
+            name={'phraseTypes'}
+            rules={[
+              {
+                required: true,
+                message: 'Выберите хотя бы один тип',
+              },
+            ]}
+          >
+            <Select
+              mode={'multiple'}
+              options={[
+                {
+                  label: 'Слово',
+                  value: 'WORD',
+                },
+                {
+                  label: 'Фраза',
+                  value: 'PHRASE',
+                },
+              ]}
+              placeholder={'Выберите типы слов'}
+            />
+          </FormItem>
+          <Flex gap={20}>
             <FormItem
-              label={'Части речи'}
-              name={'partsOfSpeech'}
+              label={'Количество слов'}
+              name={'translatesAmount'}
               rules={[
                 {
                   required: true,
-                  message: 'Выберите хотя бы одну часть речи',
+                  message: 'Заполните поле',
+                },
+                {
+                  type: 'number',
+                  max: 20,
+                  message: 'Максимум 20 слов',
                 },
               ]}
             >
-              <Select {...sharedProps} />
+              <InputStyled placeholder={'20'} />
             </FormItem>
             <FormItem
-              label={'Типы слов'}
-              name={'phraseTypes'}
+              label={'Количество времени на 1 слово'}
+              name={'timeOnWord'}
               rules={[
                 {
                   required: true,
-                  message: 'Выберите хотя бы один тип',
+                  message: 'Заполните поле',
+                },
+                {
+                  type: 'number',
+                  max: 60,
+                  message: 'Максимум минута',
                 },
               ]}
             >
-              <Select
-                mode={'multiple'}
-                options={[
-                  {
-                    label: 'Слово',
-                    value: 'WORD',
-                  },
-                  {
-                    label: 'Фраза',
-                    value: 'PHRASE',
-                  },
-                ]}
-                placeholder={'Выберите типы слов'}
+              <InputStyled
+                placeholder={'10'}
+                formatter={value =>
+                  value
+                    ? `${value} ${
+                        'секунд' + chooseEndingForSecond(Number(value))
+                      }`
+                    : ''
+                }
               />
             </FormItem>
-            <Flex gap={20}>
-              <FormItem
-                label={'Количество слов'}
-                name={'translatesAmount'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Заполните поле',
-                  },
-                  {
-                    type: 'number',
-                    max: 20,
-                    message: 'Максимум 20 слов',
-                  },
-                ]}
-              >
-                <InputStyled placeholder={'20'} />
-              </FormItem>
-              <FormItem
-                label={'Количество времени на 1 слово'}
-                name={'timeOnWord'}
-                rules={[
-                  {
-                    required: true,
-                    message: 'Заполните поле',
-                  },
-                  {
-                    type: 'number',
-                    max: 60,
-                    message: 'Максимум минута',
-                  },
-                ]}
-              >
-                <InputStyled
-                  placeholder={'10'}
-                  formatter={value =>
-                    value
-                      ? `${value} ${
-                          'секунд' + chooseEndingForSecond(Number(value))
-                        }`
-                      : ''
-                  }
-                />
-              </FormItem>
-            </Flex>
-          </FormStyled>
-          {!!timer && (
-            <Flex gap={15} align={'center'} vertical>
-              <Title level={3}>Игра начнется через</Title>
-              <Title level={3}>{timer}</Title>
-            </Flex>
-          )}
-          {!gameData?.data && (
-            <AuthBtn isLoading={startingGame} handleClick={handleStartGame}>
-              Начать игру
-            </AuthBtn>
-          )}
-        </Flex>
-      )}
+          </Flex>
+        </FormStyled>
+        {!!timer && (
+          <Flex gap={15} align={'center'} vertical>
+            <Title level={3}>Игра начнется через</Title>
+            <Title level={3}>{timer}</Title>
+          </Flex>
+        )}
+        {!gameData?.data && (
+          <AuthBtn isLoading={startingGame} handleClick={handleStartGame}>
+            Начать игру
+          </AuthBtn>
+        )}
+      </Flex>
     </ConfigProvider>
   );
 };

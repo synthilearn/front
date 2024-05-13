@@ -18,9 +18,11 @@ const AnswerOption = ({
     <AnswerOptionWrapper
       $noHover={!!selectedWord}
       $status={
-        !rightWord || !selectedWord || selectedWord !== optionText
+        !rightWord ||
+        !selectedWord ||
+        (optionText !== rightWord && selectedWord !== optionText)
           ? 'default'
-          : selectedWord === optionText && selectedWord === rightWord
+          : optionText === rightWord
             ? 'right'
             : 'wrong'
       }
@@ -59,6 +61,7 @@ const AnswerOptionWrapper = styled.div<{
       ? css`
           color: green;
           border-color: green;
+          transform: scale(1.1);
         `
       : $status === 'wrong' &&
         css`

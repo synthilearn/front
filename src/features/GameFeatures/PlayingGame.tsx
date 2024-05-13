@@ -11,6 +11,7 @@ interface IProps {
   answerQuestion: (translate: string) => void;
   selectedWord: string | undefined;
   rightWord: string | undefined;
+  setSelectedWord: (value: undefined | string) => void;
 }
 const PlayingGame = ({
   currentWordGame,
@@ -18,32 +19,25 @@ const PlayingGame = ({
   answerQuestion,
   selectedWord,
   rightWord,
+  setSelectedWord,
 }: IProps) => {
   const delayBarRef = useRef<HTMLDivElement>();
   useEffect(() => {
     if (currentWordGame) {
       const timerId = setTimeout(
         () => {
+          setSelectedWord(undefined);
           nextWord();
         },
         new Date(currentWordGame?.stageEndTime).getTime() -
-          new Date().getTime(),
+          new Date().getTime() +
+          500,
       );
 
-      // if (delayBarRef.current) {
-      //   console.log(delayBarRef.current);
-      //   delayBarRef.current.style.width = '100%';
-      // }
-
-      return clearTimeout(timerId);
+      return () => clearTimeout(timerId);
     }
   }, [currentWordGame]);
 
-  // useEffect(() => {
-  //   if (selectedWord && delayBarRef.current) {
-  //     delayBarRef.current.style.animation = 'none';
-  //   }
-  // }, [selectedWord]);
   return (
     <GameWrapper align={'center'} gap={'10%'} vertical>
       {currentWordGame && (

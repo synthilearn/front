@@ -10,7 +10,7 @@ enum ESegmented {
   'Словарь' = 'dictionary',
   'Книги' = 'books',
   'Игра' = 'game',
-  'Статистика' = 'statistics',
+  'Статистика' = 'statistic',
 }
 
 export const LearnLanguagePage = () => {

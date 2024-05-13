@@ -1,0 +1,1 @@
+export { StatisticWidget } from './ui';

@@ -119,3 +119,11 @@ export interface IAnswerQuestion {
   isCorrect: boolean;
   rightTranslate: string;
 }
+
+export interface IGameGeneralStatistic {
+  id: string;
+  creationDate: string;
+  statisticCreated: true;
+  result: 'FAILED' | 'PASSED';
+  status: 'FINISHED' | 'GENERATE_STATISTIC';
+}

@@ -6,6 +6,7 @@ import { useAppState } from 'shared/states/useAppState';
 import { LearnLanguagePage } from 'pages/LearnLanguagePage';
 import { DictionaryWidget } from 'widgets/DictionaryWidget';
 import { GameWidget } from 'widgets/GameWidget';
+import { StatisticWidget } from 'widgets/StatisticWidget';
 
 const AppAuthRouter = () => {
   const isAuthUser = useAppState(state => state.isAuthUser);
@@ -31,6 +32,7 @@ const AppAuthRouter = () => {
           >
             <Route path={'dictionary'} element={<DictionaryWidget />} />
             <Route path={'game'} element={<GameWidget />} />
+            <Route path={'statistic'} element={<StatisticWidget />} />
           </Route>
         </>
       ) : (

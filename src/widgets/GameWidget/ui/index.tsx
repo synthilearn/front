@@ -15,6 +15,7 @@ import {
 } from 'shared/interfaces';
 import { useCurrentWorkarea } from 'shared/states/useCurrentWorkarea';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 interface IQuestionAnswer {
   translate: string;
@@ -32,13 +33,19 @@ const sharedProps: SelectProps = {
 };
 
 export const GameWidget = () => {
+  const navigate = useNavigate();
+
   const [gameStep, setGameStep] = useState<0 | 1 | 2>(0);
   const [selectedWord, setSelectedWord] = useState<string>();
   const [rightWord, setRightWord] = useState<string>();
 
   const currentWorkarea = useCurrentWorkarea(state => state.currentWorkarea);
 
-  const { data: currentWordGame, refetch: wordRefetch } = useQuery({
+  const {
+    data: currentWordGame,
+    refetch: wordRefetch,
+    isPending: loadingWordGame,
+  } = useQuery({
     queryKey: ['playingGame'],
     enabled: gameStep === 1,
     queryFn: () => {
@@ -77,14 +84,26 @@ export const GameWidget = () => {
   };
 
   const setNextWord = async () => {
-    await wordRefetch();
+    if (
+      currentWordGame?.data?.resultData.allStages ===
+      currentWordGame?.data?.resultData.currentStage
+    ) {
+      navigate('/active-area/learn-language/statistic');
+
+      notification.success({
+        message: 'Игра завершена!',
+        description: 'Статистика по ней скоро сформируется!',
+      });
+    } else {
+      await wordRefetch();
+    }
   };
 
   const handleAnswerQuestion = async (translate: string) => {
     await answerQuestion(translate);
 
-    setTimeout(() => {
-      wordRefetch();
+    setTimeout(async () => {
+      await setNextWord();
     }, 2000);
   };
 
@@ -96,6 +115,7 @@ export const GameWidget = () => {
         nextWord={setNextWord}
         answerQuestion={handleAnswerQuestion}
         selectedWord={selectedWord}
+        setSelectedWord={setSelectedWord}
         rightWord={rightWord}
       />,
     ];
