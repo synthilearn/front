@@ -128,14 +128,12 @@ const Counter = styled(Flex)`
 `;
 
 const QuestionWrapper = styled.div`
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 50px;
-  justify-content: center;
   align-items: center;
   width: 100%;
-  padding: 5%;
+  padding: 10% 5%;
 `;
 
 const Word = styled(Flex)`
