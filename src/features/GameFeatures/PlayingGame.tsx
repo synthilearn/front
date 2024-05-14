@@ -3,7 +3,7 @@ import { IWordGame } from 'shared/interfaces';
 import { Flex } from 'antd';
 import { COLOR_TEXT } from 'shared/const';
 import AnswerOption from 'features/GameFeatures/AnswerOption';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 interface IProps {
   currentWordGame: IWordGame | undefined;
@@ -22,16 +22,27 @@ const PlayingGame = ({
   setSelectedWord,
 }: IProps) => {
   const delayBarRef = useRef<HTMLDivElement>();
+  const [isTimeStop, setIsTimeStop] = useState(false);
+
+  const handleAnswerQuestion = (translate: string) => {
+    setIsTimeStop(true);
+    const barWidth = delayBarRef.current.clientWidth;
+    delayBarRef.current.style.animation = null;
+    delayBarRef.current.style.width = `${barWidth}px`;
+    answerQuestion(translate);
+  };
   useEffect(() => {
     if (currentWordGame) {
+      delayBarRef.current.style.width = null;
+      setIsTimeStop(false);
       const timerId = setTimeout(
         () => {
-          setSelectedWord(undefined);
+          setIsTimeStop(true);
           nextWord();
         },
         new Date(currentWordGame?.stageEndTime).getTime() -
           new Date().getTime() +
-          500,
+          1000,
       );
 
       return () => clearTimeout(timerId);
@@ -50,10 +61,11 @@ const PlayingGame = ({
                   new Date().getTime()) /
                 1000
               }
-              $stopDelay={!!selectedWord}
+              $stopDelay={isTimeStop}
             />
           </div>
           <QuestionWrapper>
+            <Counter>{`${currentWordGame.currentStage}/${currentWordGame.allStages}`}</Counter>
             <Word justify={'center'} align={'center'}>
               {currentWordGame?.currentPhrase}
             </Word>
@@ -61,7 +73,7 @@ const PlayingGame = ({
               {currentWordGame?.answerOptions.map(option => (
                 <AnswerOption
                   optionText={option}
-                  onClick={answerQuestion}
+                  onClick={handleAnswerQuestion}
                   selectedWord={selectedWord}
                   rightWord={rightWord}
                 />
@@ -85,9 +97,14 @@ const DelayBar = styled.div<{ $delay: number; $stopDelay: boolean }>`
   @keyframes decreaseWidth {
     from {
       width: 100%;
+      background-color: ${COLOR_TEXT};
+    }
+    70% {
+      background-color: ${COLOR_TEXT};
     }
     to {
       width: 0;
+      background: red;
     }
   }
 
@@ -102,8 +119,12 @@ const DelayBar = styled.div<{ $delay: number; $stopDelay: boolean }>`
         `
       : css`
           animation: decreaseWidth ${$delay}s linear forwards;
-          width: 100%;
         `}
+`;
+
+const Counter = styled(Flex)`
+  font-size: 30px;
+  justify-content: flex-start;
 `;
 
 const QuestionWrapper = styled.div`

@@ -95,6 +95,7 @@ export const GameWidget = () => {
         description: 'Статистика по ней скоро сформируется!',
       });
     } else {
+      setSelectedWord(undefined);
       await wordRefetch();
     }
   };
