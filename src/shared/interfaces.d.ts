@@ -127,3 +127,22 @@ export interface IGameGeneralStatistic {
   result: 'FAILED' | 'PASSED';
   status: 'FINISHED' | 'GENERATE_STATISTIC';
 }
+
+export interface IGameStatistic {
+  id: string;
+  translatesInGame: number;
+  correctTranslates: number;
+  incorrectTranslates: number;
+  translatesLackTime: number;
+  phraseInfos: any;
+}
+
+export interface IWordStatistic {
+  word: string;
+  answer: string;
+  correct: boolean;
+  correctAnswerId: string;
+  correctAnswerText: string;
+  newProgress: number;
+  oldProgress: number;
+}

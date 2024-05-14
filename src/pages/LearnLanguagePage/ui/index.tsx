@@ -4,11 +4,10 @@ import { useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 
-const segmented = ['Словарь', 'Книги', 'Игра', 'Статистика'];
+const segmented = ['Словарь', 'Игра', 'Статистика'];
 
 enum ESegmented {
   'Словарь' = 'dictionary',
-  'Книги' = 'books',
   'Игра' = 'game',
   'Статистика' = 'statistic',
 }
