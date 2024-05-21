@@ -2,6 +2,7 @@ import OTPInput from 'react-otp-input';
 import styled from 'styled-components';
 import { Dispatch, SetStateAction } from 'react';
 import '../styles/styles.scss';
+import { Flex, Typography } from 'antd';
 
 interface IEnterCode {
   otp: string;
@@ -10,17 +11,20 @@ interface IEnterCode {
 
 export const OTPCodeInput = ({ otp, setOtp }: IEnterCode) => {
   return (
-    <CodeContainer>
-      <OTPInput
-        value={otp}
-        onChange={setOtp}
-        numInputs={6}
-        inputStyle={'my-input'}
-        placeholder={'123456'}
-        renderSeparator={<span style={{ width: '10px' }}></span>}
-        renderInput={props => <input {...props} />}
-      />
-    </CodeContainer>
+    <Flex align={'center'} gap={15} vertical>
+      <Typography.Text>Введите код отправленный на вашу почту</Typography.Text>
+      <CodeContainer>
+        <OTPInput
+          value={otp}
+          onChange={setOtp}
+          numInputs={6}
+          inputStyle={'my-input'}
+          placeholder={'123456'}
+          renderSeparator={<span style={{ width: '10px' }}></span>}
+          renderInput={props => <input {...props} />}
+        />
+      </CodeContainer>
+    </Flex>
   );
 };
 

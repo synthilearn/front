@@ -31,12 +31,12 @@ const SidebarBody = ({
       activeAreas.map(({ label, clickLink }) => getItem(label, clickLink)),
     ),
 
-    getItem(
-      'Деактивированные',
-      'deactiveAreaTitle',
-      <CloseOutlined />,
-      deactiveAreas.map(({ label, clickLink }) => getItem(label, clickLink)),
-    ),
+    // getItem(
+    //   'Деактивированные',
+    //   'deactiveAreaTitle',
+    //   <CloseOutlined />,
+    //   deactiveAreas.map(({ label, clickLink }) => getItem(label, clickLink)),
+    // ),
   ];
 
   useEffect(() => {
